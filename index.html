@@ -136,15 +136,14 @@ body.splash-active{overflow:hidden}
 #gate > * { position: relative; z-index: 1; }
 
 .gate-logo {
-  max-width: 140px;
-  max-height: 140px;
+  max-width: 280px; /* Increase this value to make it wider */
+  max-height: 280px; /* Increase this value to make it taller */
   width: auto;
   height: auto;
   object-fit: contain;
   margin-bottom: 2rem;
   opacity: 0;
   animation: fadeUp 1s .1s forwards;
-  /* Removed heavy dark drop-shadow to match the embossed look */
 }
 
 .gate-pretitle {
@@ -932,14 +931,13 @@ footer{
     <source src="splash.mp4" type="video/mp4"/>
   </video>
   <div class="splash-content">
-    <p class="splash-pretitle">You are cordially invited</p>
-    <div class="splash-names">Tracey <span class="splash-amp">&amp;</span> David</div>
+   
     <div class="splash-divider"><span></span><i>✦</i><span></span></div>
   </div>
   <div class="splash-progress" id="splash-progress">
     <div class="splash-progress-bar" id="splash-progress-bar"></div>
   </div>
-  <p class="splash-hint">Tap anywhere to begin</p>
+  
 </div>
 
 <!-- ══════════════════════════════════════
