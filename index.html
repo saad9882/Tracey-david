@@ -91,107 +91,191 @@ body.splash-active{overflow:hidden}
 @keyframes hintPulse{0%,100%{opacity:.38}50%{opacity:.78}}
 
 /* ═══════════════════════════════════════════════════
-   GUEST GATE  — gate.png background
+   GUEST GATE  — Light / Paper Theme
 ═══════════════════════════════════════════════════ */
-#gate{
-  position:fixed;inset:0;z-index:8000;
-  background:#d4d4b9;
-  display:none;flex-direction:column;
-  align-items:center;justify-content:center;
-  padding:2rem;
-  transition:opacity .9s ease,transform .9s ease;
-}
-/* gate background — real <img> so it always renders */
-#gate-bg{
-  position:absolute;inset:0;width:100%;height:100%;
-  object-fit:cover;object-position:center;
-  display:block;z-index:0;
-}
-#gate.visible{display:flex}
-#gate.hide{opacity:0;transform:scale(1.04);pointer-events:none}
-#gate.gone{display:none!important}
-/* dark overlay so text stays readable over gate.png */
-#gate::before{
-  content:'';position:absolute;inset:0;
-  background:linear-gradient(160deg,rgba(208, 212, 159, 0.72) 0%,rgba(10,24,16,.8) 100%);
-  z-index:0;pointer-events:none;
-}
-/* gold inner border */
-#gate::after{
-  content:'';position:absolute;inset:22px;
-  border:1px solid rgba(212,175,55,.3);
-  z-index:0;pointer-events:none;
-}
-/* All direct children need z-index above the overlay */
-#gate > *{position:relative;z-index:1}
+@import url('https://fonts.googleapis.com/css2?family=Bodoni+Moda:opsz@6..96&family=Cormorant+Garamond:ital@0;1&family=Raleway:wght@400;500&display=swap');
 
-.gate-logo{
-  max-width:160px;max-height:120px;
-  width:auto;height:auto;
-  object-fit:contain;
-  margin-bottom:1.3rem;
-  opacity:0;animation:fadeUp 1s .1s forwards;
-  filter:drop-shadow(0 4px 16px rgba(0,0,0,.5));
+:root {
+  --gold: #b59c7a;
+  --text-dark: #111111;
+  --bg-cream: #f4f3ee;
+  --btn-brown: #a88a5e;
 }
-.gate-pretitle{
-  font-family:'Belfast Serial Regular',serif;font-style:italic;
-  color:var(--gold);font-size:clamp(.75rem,2vw,.9rem);
-  letter-spacing:.4em;text-transform:uppercase;margin-bottom:.7rem;
-  opacity:0;animation:fadeUp 1s .2s forwards;
+
+#gate {
+  position: fixed;
+  inset: 0;
+  z-index: 8000;
+  background: var(--bg-cream);
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  transition: opacity .9s ease, transform .9s ease;
 }
-.gate-names{
-  font-family:'Bodoni Moda',serif;
-  font-size:clamp(2.4rem,7.5vw,5rem);
-  font-weight:400;color:#fff;letter-spacing:.06em;line-height:1.05;text-align:center;
-  text-shadow:0 4px 24px rgba(0,0,0,.5);
-  opacity:0;animation:fadeUp 1s .4s forwards;
-  display:flex;align-items:baseline;justify-content:center;gap:18px;flex-wrap:wrap;
+
+/* gate background — real <img> so it always renders */
+#gate-bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+  z-index: 0;
+  opacity: 0.6; /* Adjust based on your texture's intensity */
 }
-.gate-amp{font-family:'Cormorant Garamond',serif;font-style:italic;color:var(--gold);font-size:.72em}
-.gate-divider{
-  display:flex;align-items:center;gap:1rem;margin:1rem 0 1.6rem;
-  opacity:0;animation:fadeUp 1s .6s forwards;width:min(320px,80vw);
+
+#gate.visible { display: flex; }
+#gate.hide { opacity: 0; transform: scale(1.04); pointer-events: none; }
+#gate.gone { display: none !important; }
+
+/* All direct children need z-index above the background */
+#gate > * { position: relative; z-index: 1; }
+
+.gate-logo {
+  max-width: 140px;
+  max-height: 140px;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  margin-bottom: 2rem;
+  opacity: 0;
+  animation: fadeUp 1s .1s forwards;
+  /* Removed heavy dark drop-shadow to match the embossed look */
 }
-.gate-divider hr{flex:1;border:none;border-top:1px solid rgba(212,175,55,.5)}
-.gate-divider i{color:var(--gold);font-style:normal;font-size:9px}
-.gate-form{
-  display:flex;flex-direction:column;align-items:center;
-  gap:.9rem;width:min(420px,90vw);
-  opacity:0;animation:fadeUp 1s .8s forwards;
+
+.gate-pretitle {
+  font-family: 'Bodoni Moda', serif;
+  font-style: normal;
+  color: var(--text-dark);
+  font-size: clamp(.75rem, 2vw, .85rem);
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+  margin-bottom: 1rem;
+  opacity: 0;
+  animation: fadeUp 1s .2s forwards;
 }
-.gate-form label{
-  font-family:'Cormorant Garamond',serif;font-style:italic;
-  font-size:clamp(.95rem,2.5vw,1.1rem);color:rgba(245,245,220,.9);
-  text-align:center;line-height:1.65;
+
+.gate-names {
+  font-family: 'Bodoni Moda', serif;
+  font-size: clamp(2.2rem, 7.5vw, 3.5rem);
+  font-weight: 400;
+  color: var(--text-dark);
+  letter-spacing: 0.1em;
+  line-height: 1.05;
+  text-align: center;
+  opacity: 0;
+  animation: fadeUp 1s .4s forwards;
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 15px;
+  flex-wrap: wrap;
 }
-.gate-form input[type="text"]{
-  width:100%;padding:.85rem 1.5rem;
-  background:rgba(255,255,255,.12);
-  border:1.5px solid rgba(212,175,55,.5);border-radius:50px;
-  font-family:'Raleway',sans-serif;font-size:.95rem;
-  color:#fff;text-align:center;outline:none;
-  backdrop-filter:blur(8px);
-  transition:border-color .3s,box-shadow .3s,background .3s;
+
+.gate-divider {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin: 1.5rem 0 2rem;
+  opacity: 0;
+  animation: fadeUp 1s .6s forwards;
+  width: min(320px, 80vw);
 }
-.gate-form input::placeholder{color:rgba(255,255,255,.4)}
-.gate-form input:focus{
-  border-color:var(--gold);background:rgba(255,255,255,.18);
-  box-shadow:0 0 0 4px rgba(212,175,55,.15);
+
+.gate-divider hr {
+  flex: 1;
+  border: none;
+  border-top: 1px solid rgba(181, 156, 122, 0.4);
 }
-.btn-open{
-  padding:.9rem 3.2rem;
-  background:linear-gradient(135deg,rgba(163, 131, 79) 0%,rgba(163, 131, 79) 100%);
-  color:var(--green);border:none;border-radius:50px;
-  font-family:'Raleway',sans-serif;font-weight:500;
-  font-size:.8rem;letter-spacing:.35em;text-transform:uppercase;
-  cursor:pointer;transition:transform .25s,box-shadow .25s;
-  box-shadow:0 6px 24px rgba(0,0,0,.3);
+
+.gate-divider i {
+  color: var(--gold);
+  font-style: normal;
+  font-size: 14px;
 }
-.btn-open:hover{transform:translateY(-3px);box-shadow:0 12px 32px rgba(0,0,0,.35)}
-.btn-open:active{transform:translateY(0)}
-#gate-error{
-  color:var(--gold-light);font-size:.83rem;font-style:italic;
-  min-height:1.2em;text-align:center;font-family:'Cormorant Garamond',serif;
+
+.gate-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.2rem;
+  width: min(400px, 90vw);
+  opacity: 0;
+  animation: fadeUp 1s .8s forwards;
+}
+
+.gate-form label {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-size: clamp(1rem, 2.5vw, 1.15rem);
+  color: #333;
+  text-align: center;
+  line-height: 1.65;
+  margin-bottom: 0.5rem;
+}
+
+.gate-form input[type="text"] {
+  width: 100%;
+  padding: 1.1rem 1.5rem;
+  background: transparent;
+  border: 1px solid var(--gold);
+  border-radius: 50px;
+  font-family: 'Raleway', sans-serif;
+  font-size: 0.85rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--text-dark);
+  text-align: center;
+  outline: none;
+  transition: border-color .3s, box-shadow .3s;
+}
+
+.gate-form input::placeholder {
+  color: rgba(17, 17, 17, 0.5);
+}
+
+.gate-form input:focus {
+  border-color: #9a7b4f;
+  box-shadow: 0 0 0 3px rgba(181, 156, 122, 0.1);
+}
+
+.btn-open {
+  width: 100%;
+  padding: 1.1rem 3.2rem;
+  background: var(--btn-brown);
+  color: #fff;
+  border: none;
+  border-radius: 50px;
+  font-family: 'Raleway', sans-serif;
+  font-weight: 400;
+  font-size: 0.85rem;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: transform .25s, opacity .25s;
+}
+
+.btn-open:hover {
+  transform: translateY(-2px);
+  opacity: 0.9;
+}
+
+.btn-open:active {
+  transform: translateY(0);
+}
+
+.gate-bottom-divider {
+  margin-top: 2rem;
+  margin-bottom: 0;
+}
+
+@keyframes fadeUp {
+  0% { opacity: 0; transform: translateY(20px); }
+  100% { opacity: 1; transform: translateY(0); }
 }
 
 /* ═══════════════════════════════════════════════════
