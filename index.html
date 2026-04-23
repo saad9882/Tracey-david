@@ -32,79 +32,104 @@ body{
 }
 body.splash-active{overflow:hidden}
 
-/* ═══════════════════════════════════════════════════
-   SPLASH
-═══════════════════════════════════════════════════ */
-#splash{
-  position:fixed;inset:0;z-index:9999;background:#000;
-  display:flex;flex-direction:column;
-  align-items:center;justify-content:flex-end;
-  padding-bottom:max(clamp(50px,10vh,90px),env(safe-area-inset-bottom,0px) + 40px);
-  padding-left:max(clamp(20px,5vw,60px),env(safe-area-inset-left,0px));
-  padding-right:max(clamp(20px,5vw,60px),env(safe-area-inset-right,0px));
-  cursor:pointer;height:100dvh;height:100vh;
-  transition:opacity 1s ease,visibility 1s ease;
+#splash {
+  position: fixed; inset: 0; z-index: 9999; background: #000;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: flex-end;
+  padding-bottom: max(clamp(50px, 10vh, 90px), env(safe-area-inset-bottom, 0px) + 40px);
+  padding-left: max(clamp(20px, 5vw, 60px), env(safe-area-inset-left, 0px));
+  padding-right: max(clamp(20px, 5vw, 60px), env(safe-area-inset-right, 0px));
+  cursor: pointer; height: 100dvh; height: 100vh;
+  transition: opacity 1s ease, visibility 1s ease;
 }
-@supports(height:100dvh){#splash{height:100dvh}}
-#splash.hidden{opacity:0;visibility:hidden;pointer-events:none}
-#splash video{
-  position:absolute;inset:0;width:100%;height:100%;
-  object-fit:cover;object-position:center;pointer-events:none;
+
+@supports(height: 100dvh) { 
+  #splash { height: 100dvh; }
 }
-#splash::before{
-  content:'';position:absolute;inset:0;z-index:1;pointer-events:none;
-  background:linear-gradient(170deg,rgba(0,0,0,.42) 0%,rgba(26,51,34,.18) 50%,rgba(0,0,0,.52) 100%);
+
+#splash.hidden { 
+  opacity: 0; visibility: hidden; pointer-events: none; 
 }
-#splash::after{
-  content:'';position:absolute;bottom:0;left:0;right:0;height:60%;z-index:1;pointer-events:none;
-  background:linear-gradient(to top,rgba(0,0,0,.88) 0%,rgba(0,0,0,.22) 65%,transparent 100%);
+
+/* This makes the video responsive on all devices */
+#splash video {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  object-fit: cover; object-position: center; pointer-events: none;
 }
-.splash-content{position:relative;z-index:2;text-align:center;width:100%;max-width:700px;pointer-events:none}
-.splash-pretitle{
-  font-weight:200;font-size:clamp(8px,1.5vw,11px);letter-spacing:.6em;text-transform:uppercase;
-  color:var(--gold);margin-bottom:16px;opacity:0;animation:fadeIn 1.4s .3s ease forwards;
+
+/* FIXED: Reduced global overlay opacity so video colors pop */
+#splash::before {
+  content: ''; position: absolute; inset: 0; z-index: 1; pointer-events: none;
+  background: linear-gradient(170deg, rgba(0,0,0,.15) 0%, rgba(26,51,34,.05) 50%, rgba(0,0,0,.2) 100%);
 }
-.splash-names{
-  font-family:'Bodoni Moda',serif;font-size:clamp(42px,11vw,96px);font-weight:400;color:#fff;
-  letter-spacing:.06em;line-height:1.05;text-shadow:0 6px 44px rgba(0,0,0,.55);
-  opacity:0;animation:fadeUp 1.4s .5s ease forwards;
-  display:flex;align-items:baseline;justify-content:center;gap:clamp(10px,2.5vw,26px);flex-wrap:wrap;
+
+/* FIXED: Reduced bottom gradient opacity (just enough to keep text readable) */
+#splash::after {
+  content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 60%; z-index: 1; pointer-events: none;
+  background: linear-gradient(to top, rgba(0,0,0,.5) 0%, rgba(0,0,0,.1) 65%, transparent 100%);
 }
-.splash-amp{font-family:'Cormorant Garamond',serif;font-style:italic;color:var(--gold);font-size:.75em;opacity:.9}
-.splash-divider{
-  display:flex;align-items:center;gap:clamp(8px,3vw,16px);justify-content:center;
-  margin:clamp(14px,3vh,24px) auto 0;opacity:0;animation:fadeIn 1.4s .9s ease forwards;
+
+.splash-content { position: relative; z-index: 2; text-align: center; width: 100%; max-width: 700px; pointer-events: none; }
+
+.splash-pretitle {
+  font-weight: 200; font-size: clamp(8px, 1.5vw, 11px); letter-spacing: .6em; text-transform: uppercase;
+  color: var(--gold); margin-bottom: 16px; opacity: 0; animation: fadeIn 1.4s .3s ease forwards;
 }
-.splash-divider span{width:clamp(28px,6vw,60px);height:1px;background:var(--gold);opacity:.55;display:block}
-.splash-divider i{color:var(--gold);font-style:normal;font-size:8px;letter-spacing:.2em}
+
+.splash-names {
+  font-family: 'Bodoni Moda', serif; font-size: clamp(42px, 11vw, 96px); font-weight: 400; color: #fff;
+  letter-spacing: .06em; line-height: 1.05; text-shadow: 0 6px 44px rgba(0,0,0,.55);
+  opacity: 0; animation: fadeUp 1.4s .5s ease forwards;
+  display: flex; align-items: baseline; justify-content: center; gap: clamp(10px, 2.5vw, 26px); flex-wrap: wrap;
+}
+
+.splash-amp { font-family: 'Cormorant Garamond', serif; font-style: italic; color: var(--gold); font-size: .75em; opacity: .9; }
+
+.splash-divider {
+  display: flex; align-items: center; gap: clamp(8px, 3vw, 16px); justify-content: center;
+  margin: clamp(14px, 3vh, 24px) auto 0; opacity: 0; animation: fadeIn 1.4s .9s ease forwards;
+}
+
+.splash-divider span { width: clamp(28px, 6vw, 60px); height: 1px; background: var(--gold); opacity: .55; display: block; }
+.splash-divider i { color: var(--gold); font-style: normal; font-size: 8px; letter-spacing: .2em; }
+
 /* 3-second progress bar */
-.splash-progress{position:absolute;bottom:0;left:0;right:0;z-index:3;height:3px;background:rgba(212,175,55,.25);display:none}
-.splash-progress-bar{height:100%;background:linear-gradient(90deg,var(--gold),var(--gold-light));width:0%;transition:width 3s linear}
-.splash-progress.running{display:block}
-.splash-progress.running .splash-progress-bar{width:100%}
-.splash-hint{
-  position:absolute;bottom:clamp(22px,4vh,44px);left:50%;transform:translateX(-50%);
-  z-index:2;color:rgba(255,255,255,.42);font-size:8px;letter-spacing:.45em;text-transform:uppercase;
-  opacity:0;white-space:nowrap;
-  animation:fadeIn 1s 1.6s ease forwards,hintPulse 2.6s 2.8s ease-in-out infinite;
+.splash-progress { position: absolute; bottom: 0; left: 0; right: 0; z-index: 3; height: 3px; background: rgba(212,175,55,.25); display: none; }
+.splash-progress-bar { height: 100%; background: linear-gradient(90deg, var(--gold), var(--gold-light)); width: 0%; transition: width 3s linear; }
+.splash-progress.running { display: block; }
+.splash-progress.running .splash-progress-bar { width: 100%; }
+
+.splash-hint {
+  position: absolute; bottom: clamp(22px, 4vh, 44px); left: 50%; transform: translateX(-50%);
+  z-index: 2; color: rgba(255,255,255,.6); font-size: 8px; letter-spacing: .45em; text-transform: uppercase;
+  opacity: 0; white-space: nowrap;
+  animation: fadeIn 1s 1.6s ease forwards, hintPulse 2.6s 2.8s ease-in-out infinite;
 }
-@keyframes hintPulse{0%,100%{opacity:.38}50%{opacity:.78}}
+
+@keyframes hintPulse { 0%, 100% { opacity: .5 } 50% { opacity: 1 } }
+@keyframes fadeIn { to { opacity: 1; } }
+@keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+/* ═══════════════════════════════════════════════════
+   GUEST GATE  — Light / Paper Theme
+═══════════════════════════════════════════════════ */
 
 /* ═══════════════════════════════════════════════════
    GUEST GATE  — Light / Paper Theme
 ═══════════════════════════════════════════════════ */
-@import url('https://fonts.googleapis.com/css2?family=Bodoni+Moda:opsz@6..96&family=Cormorant+Garamond:ital@0;1&family=Raleway:wght@400;500&display=swap');
 
 :root {
   --gold: #b59c7a;
   --text-dark: #111111;
   --bg-cream: #f4f3ee;
-  --btn-brown: #a88a5e;
 }
 
 #gate {
   position: fixed;
-  inset: 0;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh; /* Fallback */
+  height: 100dvh; /* Perfect responsive height for mobile */
   z-index: 8000;
   background: var(--bg-cream);
   display: none;
@@ -113,6 +138,7 @@ body.splash-active{overflow:hidden}
   justify-content: center;
   padding: 2rem;
   transition: opacity .9s ease, transform .9s ease;
+  overflow: hidden; /* Prevents unwanted scrolling */
 }
 
 /* gate background — real <img> so it always renders */
@@ -126,6 +152,7 @@ body.splash-active{overflow:hidden}
   display: block;
   z-index: 0;
   opacity: 0.6; /* Adjust based on your texture's intensity */
+  pointer-events: none;
 }
 
 #gate.visible { display: flex; }
@@ -136,8 +163,8 @@ body.splash-active{overflow:hidden}
 #gate > * { position: relative; z-index: 1; }
 
 .gate-logo {
-  max-width: 280px; /* Increase this value to make it wider */
-  max-height: 280px; /* Increase this value to make it taller */
+  max-width: 280px;
+  max-height: 280px;
   width: auto;
   height: auto;
   object-fit: contain;
@@ -147,7 +174,8 @@ body.splash-active{overflow:hidden}
 }
 
 .gate-pretitle {
-  font-family: 'Bodoni Moda', serif;
+  /* Updated Header Font */
+  font-family: 'Sloop Script Pro', 'Blosta Script', cursive;
   font-style: normal;
   color: var(--text-dark);
   font-size: clamp(.75rem, 2vw, .85rem);
@@ -159,7 +187,8 @@ body.splash-active{overflow:hidden}
 }
 
 .gate-names {
-  font-family: 'Bodoni Moda', serif;
+  /* Updated Header Font */
+  font-family: 'Sloop Script Pro', 'Blosta Script', cursive;
   font-size: clamp(2.2rem, 7.5vw, 3.5rem);
   font-weight: 400;
   color: var(--text-dark);
@@ -188,7 +217,7 @@ body.splash-active{overflow:hidden}
 .gate-divider hr {
   flex: 1;
   border: none;
-  border-top: 1px solid rgba(181, 156, 122, 0.4);
+  border-top: 1px solid rgba(77, 33, 33);
 }
 
 .gate-divider i {
@@ -208,8 +237,9 @@ body.splash-active{overflow:hidden}
 }
 
 .gate-form label {
-  font-family: 'Cormorant Garamond', serif;
-  font-style: italic;
+  /* Updated Text Font */
+  font-family: 'Literaturnaya', serif;
+  font-style: normal;
   font-size: clamp(1rem, 2.5vw, 1.15rem);
   color: #333;
   text-align: center;
@@ -223,7 +253,8 @@ body.splash-active{overflow:hidden}
   background: transparent;
   border: 1px solid var(--gold);
   border-radius: 50px;
-  font-family: 'Raleway', sans-serif;
+  /* Updated Text Font */
+  font-family: 'Literaturnaya', serif;
   font-size: 0.85rem;
   letter-spacing: 0.15em;
   text-transform: uppercase;
@@ -238,18 +269,19 @@ body.splash-active{overflow:hidden}
 }
 
 .gate-form input:focus {
-  border-color: #9a7b4f;
+  border-color: #4d2121;
   box-shadow: 0 0 0 3px rgba(181, 156, 122, 0.1);
 }
 
 .btn-open {
   width: 100%;
   padding: 1.1rem 3.2rem;
-  background: var(--btn-brown);
+  background: rgb(77, 33, 33); /* Updated Button Color */
   color: #fff;
   border: none;
   border-radius: 50px;
-  font-family: 'Raleway', sans-serif;
+  /* Updated Text Font */
+  font-family: 'Literaturnaya', serif;
   font-weight: 400;
   font-size: 0.85rem;
   letter-spacing: 0.25em;
@@ -278,99 +310,92 @@ body.splash-active{overflow:hidden}
 }
 
 /* ═══════════════════════════════════════════════════
-   TRANSPARENT HEADER — always transparent
+   SOLID HEADER — #EFEEE9 background
 ═══════════════════════════════════════════════════ */
-#site-header{
-  position:fixed;top:0;left:0;right:0;z-index:500;
-  height:var(--hh);
-  background:transparent;
-  transition:transform .5s ease;
-  display:flex;align-items:center;
-  padding:0 clamp(16px,4vw,52px);
-  gap:1.2rem;
-  transform:translateY(-100%);
+#site-header {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 500;
+  height: 90px; /* Increased height for better logo fit */
+  background: #EFEEE9;
+  transition: transform .5s ease;
+  display: flex; align-items: center;
+  padding: 0 clamp(20px, 5vw, 60px); /* Slightly increased padding */
+  gap: 1.2rem;
+  transform: translateY(-100%);
+  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
 }
-#site-header.show{transform:translateY(0)}
+#site-header.show { transform: translateY(0); }
 
-.header-logo{
-  max-height:44px;max-width:90px;
-  width:auto;height:auto;
-  object-fit:contain;flex-shrink:0;
-  filter:drop-shadow(0 1px 4px rgba(0,0,0,.3));
+.header-logo {
+  /* Increased size to be more prominent */
+  max-height: 170px; 
+  max-width: 140px; 
+  width: auto; 
+  height: auto;
+  object-fit: contain; 
+  flex-shrink: 0;
+  margin-right: auto; /* Keeps navigation pushed to the right */
+  display: block;
 }
-.header-brand{
-  font-family:'Bodoni Moda',serif;font-style:italic;
-  font-size:clamp(.95rem,2.2vw,1.25rem);color:#fff;
-  letter-spacing:.06em;font-weight:400;
-  flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
-  text-shadow:0 2px 8px rgba(0,0,0,.4);
-}
-.header-brand span{color:var(--gold)}
 
 /* NAV */
-.header-nav{display:flex;align-items:center;gap:clamp(10px,2.5vw,36px);flex-shrink:0}
-.header-nav a{
-  font-size:clamp(8px,1.2vw,10px);letter-spacing:.3em;text-transform:uppercase;
-  color:rgba(255,255,255,.82);text-decoration:none;font-weight:400;
-  white-space:nowrap;
-  transition:color .2s;
-  text-shadow:0 1px 6px rgba(0,0,0,.5);
-  position:relative;
+.header-nav { display: flex; align-items: center; gap: clamp(15px, 2.5vw, 40px); flex-shrink: 0; }
+.header-nav a {
+  font-size: clamp(9px, 1.2vw, 11px); letter-spacing: .25em; text-transform: uppercase;
+  color: #333; 
+  text-decoration: none; font-weight: 400;
+  white-space: nowrap; transition: color .2s;
+  position: relative;
 }
-.header-nav a::after{
-  content:'';position:absolute;bottom:-3px;left:0;right:0;
-  height:1px;background:var(--gold);
-  transform:scaleX(0);transform-origin:left;
-  transition:transform .3s ease;
-}
-.header-nav a:hover{color:#fff}
-.header-nav a:hover::after{transform:scaleX(1)}
 
-.header-rsvp-btn{
-  padding:.5rem 1.5rem;
-  background:linear-gradient(135deg,var(--gold) 0%,var(--gold-light) 100%);
-  color:var(--green);border:none;border-radius:50px;
-  font-family:'Raleway',sans-serif;font-weight:500;
-  font-size:clamp(8px,1.1vw,10px);letter-spacing:.3em;text-transform:uppercase;
-  cursor:pointer;transition:transform .2s,box-shadow .2s;
-  box-shadow:0 3px 12px rgba(212,175,55,.35);
-  text-decoration:none;white-space:nowrap;
-  display:inline-flex;align-items:center;flex-shrink:0;
+.header-nav > a::after, .nav-dropdown > a::after {
+  content: ''; position: absolute; bottom: -5px; left: 0; right: 0;
+  height: 1px; background: var(--gold);
+  transform: scaleX(0); transform-origin: left;
+  transition: transform .3s ease;
 }
-.header-rsvp-btn:hover{transform:translateY(-2px);box-shadow:0 6px 18px rgba(212,175,55,.4)}
+.header-nav a:hover, .nav-dropdown:hover > a { color: var(--gold); }
+.header-nav > a:hover::after, .nav-dropdown:hover > a::after { transform: scaleX(1); }
+
+/* DROPDOWNS */
+.nav-dropdown { position: relative; display: inline-block; padding: 20px 0; }
+.dropdown-content {
+  display: none; position: absolute; top: 100%; left: 50%; transform: translateX(-50%);
+  background-color: #EFEEE9; min-width: 280px;
+  box-shadow: 0 8px 16px rgba(0,0,0,0.05); padding: 15px 0; border-radius: 2px; z-index: 501;
+}
+.nav-dropdown:hover .dropdown-content { display: flex; flex-direction: column; }
+.dropdown-content a {
+  color: #333; padding: 10px 20px; text-decoration: none;
+  font-size: 9px; letter-spacing: .2em; text-transform: uppercase;
+  text-align: center; transition: background-color 0.3s, color 0.3s;
+}
+.dropdown-content a:hover { background-color: rgba(181, 156, 122, 0.1); color: var(--gold); }
+.dropdown-content a::after { display: none; } 
 
 /* Mobile nav collapse */
-.nav-toggle{
-  display:none;flex-direction:column;gap:5px;cursor:pointer;
-  background:none;border:none;padding:4px;
-}
-.nav-toggle span{
-  display:block;width:22px;height:1.5px;
-  background:rgba(255,255,255,.8);transition:all .3s;
-}
-.nav-drawer{
-  position:fixed;top:var(--hh);left:0;right:0;
-  background:rgba(26,51,34,.97);backdrop-filter:blur(16px);
-  display:flex;flex-direction:column;align-items:center;
-  gap:0;z-index:499;
-  max-height:0;overflow:hidden;
-  transition:max-height .4s ease;
-  border-bottom:1px solid rgba(212,175,55,.15);
-}
-.nav-drawer.open{max-height:400px}
-.nav-drawer a{
-  padding:1.1rem 2rem;width:100%;text-align:center;
-  font-size:.78rem;letter-spacing:.35em;text-transform:uppercase;
-  color:rgba(255,255,255,.8);text-decoration:none;font-weight:400;
-  border-bottom:1px solid rgba(212,175,55,.08);
-  transition:color .2s,background .2s;
-}
-.nav-drawer a:hover{color:var(--gold);background:rgba(212,175,55,.06)}
-.nav-drawer .rsvp-drawer{color:var(--gold);font-weight:500}
+.nav-toggle { display: none; flex-direction: column; gap: 6px; cursor: pointer; background: none; border: none; padding: 10px; }
+.nav-toggle span { display: block; width: 25px; height: 1.5px; background: #333; transition: all .3s; }
 
-@media(max-width:760px){
-  .header-nav{display:none}
-  .nav-toggle{display:flex}
+.nav-drawer {
+  position: fixed; top: 90px; /* Must match new header height */
+  left: 0; right: 0;
+  background: #EFEEE9;
+  display: flex; flex-direction: column; align-items: center;
+  gap: 0; z-index: 499; max-height: 0; overflow: hidden;
+  transition: max-height .4s ease;
+  border-bottom: 1px solid rgba(0,0,0,.05);
+}
+.nav-drawer.open { max-height: 80vh; overflow-y: auto; }
+.nav-drawer a {
+  padding: 1.2rem 2rem; width: 100%; text-align: center;
+  font-size: .8rem; letter-spacing: .3em; text-transform: uppercase;
+  color: #333; text-decoration: none; border-bottom: 1px solid rgba(0,0,0,.03);
+}
+.nav-drawer a:hover { color: var(--gold); background: rgba(0,0,0,.03); }
+
+@media(max-width: 900px){
+  .header-nav { display: none; }
+  .nav-toggle { display: flex; }
 }
 
 /* ═══════════════════════════════════════════════════
@@ -939,10 +964,6 @@ footer{
   </div>
   
 </div>
-
-<!-- ══════════════════════════════════════
-     GUEST GATE  — gate.png background
-══════════════════════════════════════ -->
 <div id="gate">
   <img src="gate.jpe" alt="" id="gate-bg" aria-hidden="true" onerror="this.style.display='none'"/>
   <img src="logo.png" alt="T&D" class="gate-logo" onerror="this.style.display='none'"/>
@@ -950,9 +971,9 @@ footer{
   <div class="gate-names">Tracey <span class="gate-amp">&amp;</span> David</div>
   <div class="gate-divider"><hr/><i>✦</i><hr/></div>
   <div class="gate-form">
-    <label for="guest-name-input">Please enter your full name to open your invitation</label>
-    <input type="text" id="guest-name-input" placeholder="Your Full Name" autocomplete="off"/>
-    <button class="btn-open" id="open-btn">Open Invitation</button>
+    <label for="guest-name-input">Please enter your first and last name to open the website</label>
+    <input type="text" id="guest-name-input" placeholder="First and Last Name" autocomplete="off"/>
+    <button class="btn-open" id="open-btn">Open website</button>
     <p id="gate-error" aria-live="polite"></p>
   </div>
 </div>
@@ -962,32 +983,56 @@ footer{
   <source src="music.mp3" type="audio/mpeg"/>
 </audio>
 
-<!-- ══════════════════════════════════════
-     TRANSPARENT STICKY HEADER
-══════════════════════════════════════ -->
 <header id="site-header">
   <img src="logo.png" alt="T&D" class="header-logo" onerror="this.style.display='none'"/>
-  <span class="header-brand">Tracey <span>&amp;</span> David</span>
-
+  
   <nav class="header-nav">
-    <a href="#our-story">Our Story</a>
-    <a href="#travel-stay">Travel &amp; Stay</a>
-    <a href="#info-faq">Info &amp; FAQ's</a>
+    <a href="#our-story">OUR STORY</a>
+    
+    <div class="nav-dropdown">
+      <a href="#travel-stay">TRAVEL & STAY</a>
+      <div class="dropdown-content">
+        <a href="#transport">GETTING HERE / TRANSPORT – UK & ITALY</a>
+        <a href="#accom-both">WHERE TO STAY // ITALY & UK GUESTS</a>
+        <a href="#accom-uk">WHERE TO STAY // UK GUESTS ONLY</a>
+        <a href="#things-to-do">THINGS TO DO // UK & ITALY GUESTS</a>
+      </div>
+    </div>
+
+    <div class="nav-dropdown">
+      <a href="#info">INFO</a>
+      <div class="dropdown-content">
+        <a href="#events">EVENTS</a>
+        <a href="#registry">REGISTRY</a>
+        <a href="#dress-code">DRESS CODE</a>
+      </div>
+    </div>
+
+    <a href="#faq">FAQ</a>
     <a class="header-rsvp-btn" href="#rsvp-page">RSVP</a>
   </nav>
 
-  <!-- Mobile hamburger -->
   <button class="nav-toggle" id="nav-toggle" aria-label="Open menu">
     <span></span><span></span><span></span>
   </button>
 </header>
 
-<!-- Mobile drawer -->
 <div class="nav-drawer" id="nav-drawer">
-  <a href="#our-story"  onclick="closeDrawer()">Our Story</a>
-  <a href="#travel-stay" onclick="closeDrawer()">Travel &amp; Stay</a>
-  <a href="#info-faq"   onclick="closeDrawer()">Info &amp; FAQ's</a>
-  <a href="#rsvp-page"  onclick="closeDrawer()" class="rsvp-drawer">RSVP</a>
+  <a href="#our-story" onclick="closeDrawer()">OUR STORY</a>
+  
+  <div class="drawer-section-title">TRAVEL & STAY</div>
+  <a href="#transport" class="drawer-sublink" onclick="closeDrawer()">Getting Here / Transport</a>
+  <a href="#accom-both" class="drawer-sublink" onclick="closeDrawer()">Where to Stay - Italy & UK</a>
+  <a href="#accom-uk" class="drawer-sublink" onclick="closeDrawer()">Where to Stay - UK Only</a>
+  <a href="#things-to-do" class="drawer-sublink" onclick="closeDrawer()">Things to Do</a>
+
+  <div class="drawer-section-title">INFO</div>
+  <a href="#events" class="drawer-sublink" onclick="closeDrawer()">Events</a>
+  <a href="#registry" class="drawer-sublink" onclick="closeDrawer()">Registry</a>
+  <a href="#dress-code" class="drawer-sublink" onclick="closeDrawer()">Dress Code</a>
+
+  <a href="#faq" onclick="closeDrawer()">FAQ</a>
+  <a href="#rsvp-page" onclick="closeDrawer()" class="rsvp-drawer">RSVP</a>
 </div>
 
 <!-- Audio button -->
@@ -1122,7 +1167,7 @@ footer{
   <section id="our-story">
     <div style="max-width:1100px;margin:0 auto">
       <p class="section-label reveal">The Beginning</p>
-      <h2 class="section-title reveal reveal-d1">Our Story</h2>
+      <h2 class="section-title reveal reveal-d1">OUR STORY</h2>
       <div class="section-rule reveal reveal-d2"></div>
       <p class="section-sub reveal reveal-d3">Every love story is beautiful, but ours is our favourite</p>
 
@@ -1189,75 +1234,94 @@ footer{
   <section id="travel-stay">
     <div style="max-width:1100px;margin:0 auto;position:relative;z-index:1">
       <p class="section-label reveal">Getting Here</p>
-      <h2 class="section-title reveal reveal-d1">Travel &amp; Stay</h2>
+      <h2 class="section-title reveal reveal-d1">TRAVEL & STAY</h2>
       <div class="section-rule reveal reveal-d2"></div>
       <p class="section-sub reveal reveal-d3">Everything you need to plan your journey to our celebrations</p>
 
-      <!-- UK Section -->
+      <!-- GETTING HERE /TRANSPORT – UK VERSION AND ITALY VERSION -->
       <div class="travel-destination">
         <div class="travel-dest-header reveal">
-          <h3><span>United Kingdom — 20th March 2026</span></h3>
+          <h3><span>GETTING HERE /TRANSPORT</span></h3>
           <hr/>
         </div>
         <div class="travel-grid reveal">
           <div class="travel-card">
             <span class="travel-card-icon tc-air"></span>
             <div class="travel-card-body">
-              <p class="travel-card-label">Nearest Airport</p>
-              <p class="travel-card-title">Getting There</p>
+              <p class="travel-card-label">UK VERSION</p>
+              <p class="travel-card-title">Nearest Airport</p>
               <p>The nearest major airports are Heathrow (LHR) and Gatwick (LGW), both well connected with international routes. Direct trains and coach services are available from both airports.</p>
               <a class="travel-link" href="https://www.heathrow.com" target="_blank" rel="noopener">Heathrow Airport <span>→</span></a>
             </div>
           </div>
           <div class="travel-card">
-            <span class="travel-card-icon tc-hotel"></span>
+            <span class="travel-card-icon tc-air"></span>
             <div class="travel-card-body">
-              <p class="travel-card-label">Where to Stay</p>
-              <p class="travel-card-title">Recommended Hotels</p>
-              <p>We have reserved a room block at <strong style="color:var(--gold)">Hotel Name TBC</strong> at a special group rate. Please quote <strong style="color:var(--gold)">"Tracey & David 2026"</strong> when booking.</p>
-              <p>A full list of nearby accommodations for all budgets will be shared closer to the date.</p>
-            </div>
-          </div>
-          <div class="travel-card">
-            <span class="travel-card-icon tc-car"></span>
-            <div class="travel-card-body">
-              <p class="travel-card-label">On The Day</p>
-              <p class="travel-card-title">Getting Around</p>
-              <p>Complimentary shuttle buses will run between the recommended hotel and the venue on the day. Taxis and rideshare services are also readily available in the area.</p>
-              <p>Ample free parking is available at the venue for guests driving.</p>
+              <p class="travel-card-label">ITALY VERSION</p>
+              <p class="travel-card-title">Nearest Airport</p>
+              <p>The nearest airport details will be confirmed once the venue is finalised. We recommend booking flights early as June is peak summer season in Italy.</p>
+              <p>We will share recommended airlines and routes closer to the date.</p>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- Italy Section -->
+      <!-- WHERE TO STAY // ACCOMODATION ITALY & UK GUESTS -->
       <div class="travel-destination">
         <div class="travel-dest-header reveal">
-          <h3><span>Italy — 26th June 2026</span></h3>
+          <h3><span>WHERE TO STAY // ACCOMODATION ITALY & UK GUESTS</span></h3>
           <hr/>
         </div>
         <div class="travel-grid reveal">
           <div class="travel-card">
-            <span class="travel-card-icon tc-air"></span>
-            <div class="travel-card-body">
-              <p class="travel-card-label">Nearest Airport</p>
-              <p class="travel-card-title">Flying In</p>
-              <p>The nearest airport details will be confirmed once the venue is finalised. We recommend booking flights early as June is peak summer season in Italy.</p>
-              <p>We will share recommended airlines and routes closer to the date.</p>
-            </div>
-          </div>
-          <div class="travel-card">
             <span class="travel-card-icon tc-villa"></span>
             <div class="travel-card-body">
-              <p class="travel-card-label">Where to Stay</p>
-              <p class="travel-card-title">Accommodation</p>
+              <p class="travel-card-label">Italy Accommodation</p>
+              <p class="travel-card-title">Villas & Hotels</p>
               <p>A selection of beautiful villas, boutique hotels, and agritourismo stays will be recommended. We are working on group rates for several properties — details coming soon.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- WHERE TO STAY // ACCOMODATION UK GUESTS ONLY -->
+      <div class="travel-destination">
+        <div class="travel-dest-header reveal">
+          <h3><span>WHERE TO STAY // ACCOMODATION UK GUESTS ONLY</span></h3>
+          <hr/>
+        </div>
+        <div class="travel-grid reveal">
+          <div class="travel-card">
+            <span class="travel-card-icon tc-hotel"></span>
+            <div class="travel-card-body">
+              <p class="travel-card-label">UK Accommodation</p>
+              <p class="travel-card-title">Recommended Hotels</p>
+              <p>We have reserved a room block at <strong style="color:var(--gold)">Hotel Name TBC</strong> at a special group rate. Please quote <strong style="color:var(--gold)">"Tracey & David 2026"</strong> when booking.</p>
+              <p>A full list of nearby accommodations for all budgets will be shared closer to the date.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- THINGS TO DO UK & ITALY GUESTS ONLY -->
+      <div class="travel-destination">
+        <div class="travel-dest-header reveal">
+          <h3><span>THINGS TO DO UK & ITALY GUESTS ONLY</span></h3>
+          <hr/>
+        </div>
+        <div class="travel-grid reveal">
+          <div class="travel-card">
+            <span class="travel-card-icon tc-sun"></span>
+            <div class="travel-card-body">
+              <p class="travel-card-label">UK Things to Do</p>
+              <p class="travel-card-title">Explore London</p>
+              <p>London offers endless possibilities. From historic sites to world-class museums, there's something for everyone. We'll share insider tips on the best places to visit during your stay.</p>
             </div>
           </div>
           <div class="travel-card">
             <span class="travel-card-icon tc-sun"></span>
             <div class="travel-card-body">
-              <p class="travel-card-label">Make the Most of It</p>
+              <p class="travel-card-label">Italy Things to Do</p>
               <p class="travel-card-title">Extend Your Trip</p>
               <p>Italy in June is magical. We encourage guests to turn this into a memorable Italian holiday. We'll be sharing insider tips on things to do, see, and eat in the surrounding area.</p>
             </div>
@@ -1269,12 +1333,12 @@ footer{
   </section>
 
   <!-- ══════════════════════════════════════
-       INFO & FAQ'S
+       INFO
   ══════════════════════════════════════ -->
-  <section id="info-faq">
+  <section id="info">
     <div style="max-width:1100px;margin:0 auto">
       <p class="section-label reveal">Good to Know</p>
-      <h2 class="section-title reveal reveal-d1">Info &amp; FAQ's</h2>
+      <h2 class="section-title reveal reveal-d1">INFO</h2>
       <div class="section-rule reveal reveal-d2"></div>
       <p class="section-sub reveal reveal-d3">Everything you need to know before the big day</p>
 
@@ -1287,30 +1351,27 @@ footer{
         </div>
         <div class="info-card">
           <span class="info-card-icon">&#10022;</span>
-          <p class="info-card-title">Gift Registry</p>
+          <p class="info-card-title">Registry</p>
           <p class="info-card-text">Your presence is truly the greatest gift. However, if you'd like to contribute, a gift registry and honeymoon fund will be shared closer to the wedding day.</p>
         </div>
         <div class="info-card">
           <span class="info-card-icon">&#9671;</span>
-          <p class="info-card-title">Photography</p>
-          <p class="info-card-text">We have a professional photographer capturing the day. We kindly ask guests to be present and not obstruct shots during the ceremony. Feel free to snap away at the reception!</p>
-        </div>
-        <div class="info-card">
-          <span class="info-card-icon">&#10022;</span>
-          <p class="info-card-title">Children</p>
-          <p class="info-card-text">We love your little ones! Please check your individual invitation to see whether children are included. We will have a quiet room available for families with young children.</p>
-        </div>
-        <div class="info-card">
-          <span class="info-card-icon">&#9830;</span>
-          <p class="info-card-title">Pets</p>
-          <p class="info-card-text">As much as we adore four-legged friends, we kindly ask that pets are not brought to the venue unless pre-arranged with us directly.</p>
-        </div>
-        <div class="info-card">
-          <span class="info-card-icon">&#9825;</span>
-          <p class="info-card-title">RSVP Deadline</p>
-          <p class="info-card-text">Please let us know you're coming by <strong>April 1st, 2026</strong>. Kindly RSVP for each event separately if you are invited to both celebrations.</p>
+          <p class="info-card-title">Events</p>
+          <p class="info-card-text">We have two celebrations: one in the UK on March 20th, 2026, and one in Italy on June 26th, 2026. Details for each event will be shared with invited guests.</p>
         </div>
       </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════
+       FAQ
+  ══════════════════════════════════════ -->
+  <section id="faq">
+    <div style="max-width:1100px;margin:0 auto">
+      <p class="section-label reveal">Questions</p>
+      <h2 class="section-title reveal reveal-d1">FAQ</h2>
+      <div class="section-rule reveal reveal-d2"></div>
+      <p class="section-sub reveal reveal-d3">Frequently asked questions</p>
 
       <!-- FAQ Accordion -->
       <div class="faq-layout reveal">
