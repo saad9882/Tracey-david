@@ -49,9 +49,23 @@ body[data-guest-tier="italy"] .tier-uk { display: none !important; }
 /* ═══════════════════════════════════════════════════
    MAIN SPLASH SCREEN
 ═══════════════════════════════════════════════════ */
-#splash { position: fixed; inset: 0; z-index: 9999; background: #000; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; padding-bottom: max(clamp(50px, 10vh, 90px), env(safe-area-inset-bottom, 0px) + 40px); cursor: pointer; height: 100dvh; transition: opacity 1s ease, visibility 1s ease; width: 100vw;}
+#splash { position: fixed; inset: 0; z-index: 9999; background: var(--bg-cream); display: flex; flex-direction: column; align-items: center; justify-content: flex-end; padding-bottom: max(clamp(50px, 10vh, 90px), env(safe-area-inset-bottom, 0px) + 40px); cursor: pointer; height: 100dvh; transition: opacity 1s ease, visibility 1s ease; width: 100vw;}
 #splash.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
-#splash video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center; pointer-events: none; }
+
+/* Video styling fixed for desktop borders and mobile sizing */
+#splash video, #secondary-splash video {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  height: 100dvh;
+  object-fit: cover;
+  object-position: center;
+  pointer-events: none;
+  transform: scale(1.02); /* Forces video past the edges to remove black borders */
+}
+
 #splash::before { content: ''; position: absolute; inset: 0; z-index: 1; pointer-events: none; background: linear-gradient(170deg, rgba(0,0,0,.15) 0%, rgba(26,51,34,.05) 50%, rgba(0,0,0,.2) 100%); }
 #splash::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 60%; z-index: 1; pointer-events: none; background: linear-gradient(to top, rgba(0,0,0,.5) 0%, rgba(0,0,0,.1) 65%, transparent 100%); }
 .splash-content { position: relative; z-index: 2; text-align: center; pointer-events: none; }
@@ -62,15 +76,14 @@ body[data-guest-tier="italy"] .tier-uk { display: none !important; }
 .splash-progress-bar { height: 100%; background: linear-gradient(90deg, var(--gold), var(--gold-light)); width: 0%; transition: width 3s linear; }
 .splash-progress.running { display: block; }
 .splash-progress.running .splash-progress-bar { width: 100%; }
-.splash-hint { position: absolute; bottom: clamp(22px, 4vh, 44px); left: 50%; transform: translateX(-50%); z-index: 2; color: rgba(255,255,255,.6); font-size: 8px; letter-spacing: .45em; text-transform: uppercase; opacity: 0; animation: fadeIn 1s 1.6s ease forwards, hintPulse 2.6s 2.8s ease-in-out infinite; }
+.splash-hint { position: absolute; bottom: clamp(22px, 4vh, 44px); left: 50%; transform: translateX(-50%); z-index: 2; color: rgba(255,255,255,.8); font-size: 8px; letter-spacing: .45em; text-transform: uppercase; opacity: 0; animation: fadeIn 1s 1.6s ease forwards, hintPulse 2.6s 2.8s ease-in-out infinite; }
 
 /* ═══════════════════════════════════════════════════
    SECONDARY SPLASH SCREEN
 ═══════════════════════════════════════════════════ */
-#secondary-splash { position: fixed; inset: 0; z-index: 9000; background: #000; height: 100dvh; width: 100vw; transition: opacity 0.5s ease, visibility 0.5s ease; }
+#secondary-splash { position: fixed; inset: 0; z-index: 9000; background: var(--bg-cream); height: 100dvh; width: 100vw; transition: opacity 0.5s ease, visibility 0.5s ease; }
 #secondary-splash.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
 #secondary-splash.visible { opacity: 1; visibility: visible; pointer-events: auto; }
-#secondary-splash video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center; pointer-events: none; }
 
 /* ═══════════════════════════════════════════════════
    GUEST GATE
@@ -94,7 +107,6 @@ body[data-guest-tier="italy"] .tier-uk { display: none !important; }
 .gate-subtitle { font-family: 'Literaturnaya', 'Cormorant Garamond', serif; font-style: italic; font-size: clamp(1rem, 3vw, 1.2rem); color: var(--burgundy); margin-bottom: 1rem; opacity: 0; animation: fadeUp 1s .5s forwards; text-align: center; }
 .gate-form { display: flex; flex-direction: column; align-items: center; width: min(360px, 100%); opacity: 0; animation: fadeUp 1s .7s forwards; }
 .gate-form label { font-family: 'Literaturnaya', serif; font-size: 0.75rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--burgundy); margin-bottom: 0.5rem; text-align: center; }
-/* Font-size 16px to prevent iOS Zoom */
 .gate-form input[type="text"] { width: 100%; padding: 0.5rem 0; background: transparent; border: none; border-bottom: 1px solid var(--burgundy); border-radius: 0; font-family: 'Literaturnaya', serif; font-size: 16px; color: var(--burgundy); text-align: center; outline: none; margin-bottom: 1.5rem; transition: border-bottom-width .3s; }
 .gate-form input:focus { border-bottom: 2px solid var(--burgundy); }
 .btn-open { width: 100%; padding: 1.2rem 2rem; background: var(--burgundy); color: #fff; border: none; border-radius: 6px; font-family: 'Literaturnaya', serif; font-weight: 400; font-size: 0.8rem; letter-spacing: 0.2em; text-transform: uppercase; cursor: pointer; transition: transform .25s, opacity .25s; }
@@ -295,10 +307,13 @@ footer { text-align: center; padding: 44px 24px 64px; font-size: 9px; letter-spa
   .nav-drawer { top: 78px; }
   :root { --hh: 78px; }
   .section-wrapper { padding: 70px 20px; }
-  #our-story { padding: calc(var(--hh) + 42px) 16px 62px; }
+  #our-story { padding: calc(var(--hh) + 42px) 20px 62px; }
+  .hero-welcome-block { padding: 26px 22px; }
+  .rsvp-card { padding: 2.3rem 1.5rem; }
+  .travel-grid { grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); }
 }
 @media(max-width: 600px) {
-  #hero { padding: calc(90px + 30px) 16px 56px; }
+  #hero { padding: calc(90px + 30px) 18px 56px; }
   .partner-name { font-size: clamp(40px, 12vw, 56px); }
   .hero-amp { font-size: clamp(32px, 8vw, 42px); }
   
@@ -323,8 +338,8 @@ footer { text-align: center; padding: 44px 24px 64px; font-size: 9px; letter-spa
 <body>
 
 <div id="splash">
-  <video id="splash-video" muted playsinline preload="auto" poster="poster.jpg">
-    <source src="splash.mp4" type="video/mp4"/>
+  <video id="splash-video" muted playsinline preload="auto">
+    <source src="splash.mp4#t=0.001" type="video/mp4"/>
   </video>
   <div class="splash-content">
     <div class="splash-divider"><span></span><i>✦</i><span></span></div>
