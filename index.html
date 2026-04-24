@@ -61,7 +61,7 @@ body[data-guest-tier="italy"] .tier-uk { display: none !important; }
 .splash-divider span { width: 40px; height: 1px; background: var(--gold); opacity: .55; display: block; }
 .splash-divider i { color: var(--gold); font-size: 8px; letter-spacing: .2em; font-style: normal;}
 .splash-progress { position: absolute; bottom: 0; left: 0; right: 0; z-index: 3; height: 4px; background: rgba(212,175,55,.25); display: none; }
-.splash-progress-bar { height: 100%; background: linear-gradient(90deg, var(--gold), var(--gold-light)); width: 0%; transition: width 4s linear; } /* 5s duration */
+.splash-progress-bar { height: 100%; background: linear-gradient(90deg, var(--gold), var(--gold-light)); width: 0%; transition: width 5s linear; } /* 5s duration */
 .splash-progress.running { display: block; }
 .splash-progress.running .splash-progress-bar { width: 100%; }
 .splash-hint { position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%); z-index: 2; color: rgba(255,255,255,.9); font-size: 9px; letter-spacing: .45em; text-transform: uppercase; opacity: 0; animation: fadeIn 1s 1.6s ease forwards, hintPulse 2.6s 2.8s ease-in-out infinite; cursor: pointer; }
@@ -305,7 +305,13 @@ footer { text-align: center; padding: 40px 20px 60px; font-size: 9px; letter-spa
   <video id="splash-video" autoplay muted playsinline preload="auto">
     <source src="splash.mp4#t=0.001" type="video/mp4"/>
   </video>
-
+  <div class="splash-content">
+   
+  </div>
+  
+  <div class="splash-progress" id="splash-progress">
+    <div class="splash-progress-bar" id="splash-progress-bar"></div>
+  </div>
 </div>
 
 <div id="secondary-splash" class="hidden">
