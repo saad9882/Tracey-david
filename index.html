@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
 <title>Tracey & David — Wedding Invitation</title>
 <link rel="icon" type="image/png" href="logo.png"/>
 <link rel="apple-touch-icon" href="logo.png"/>
@@ -12,7 +12,7 @@
 
 <style>
 /* ═══════════════════════════════════════════════════
-   TOKENS & BASE
+   TOKENS & BASE (Stability Fixes)
 ═══════════════════════════════════════════════════ */
 :root {
   --header-bg: #EFEEE9;
@@ -23,252 +23,236 @@
   --gold: #B59C7A;
   --gold-light: #C4AD8D;
   --burgundy: rgb(77, 33, 33);
-  --merlot: #4C0000; /* Deep red for RSVP */
+  --merlot: #4C0000; 
   --green: #1A3322;
-  --green-light: #2d5438;
   --ink: #111111;
   --ink-mid: #333333;
   --ink-light: #555555;
-  --card: rgba(239, 238, 233, 0.93);
   --card-border: rgba(0, 0, 0, 0.08);
-  --shadow: rgba(0, 0, 0, 0.05);
-  --btn-brown: rgb(77, 33, 33);
   --hh: 90px; 
 }
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth}
-body{background:var(--bg-cream);color:var(--ink);font-family:'Raleway',sans-serif;font-weight:300;overflow-x:hidden;-webkit-user-select:none;user-select:none;}
-body.splash-active{overflow:hidden}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; width: 100%; overflow-x: hidden; }
+body { background: var(--bg-cream); color: var(--ink); font-family: 'Raleway', sans-serif; font-weight: 300; overflow-x: hidden; width: 100%; position: relative; }
+body.splash-active { overflow: hidden; }
 
 /* ═══════════════════════════════════════════════════
-   GUEST SEGREGATION LOGIC (THE MAGIC)
+   GUEST SEGREGATION LOGIC
 ═══════════════════════════════════════════════════ */
-/* If guest is UK, hide Italy entirely */
 body[data-guest-tier="uk"] .tier-italy { display: none !important; }
-
-/* If guest is Italy, hide UK entirely */
 body[data-guest-tier="italy"] .tier-uk { display: none !important; }
 
 /* ═══════════════════════════════════════════════════
-   MAIN SPLASH SCREEN
+   FULLSCREEN SPLASH SCREENS (Fixed sizing)
 ═══════════════════════════════════════════════════ */
-#splash { position: fixed; inset: 0; z-index: 9999; background: var(--bg-cream); display: flex; flex-direction: column; align-items: center; justify-content: flex-end; padding-bottom: max(clamp(50px, 10vh, 90px), env(safe-area-inset-bottom, 0px) + 40px); cursor: pointer; height: 100vh; height: 100dvh; transition: opacity 1s ease, visibility 1s ease; width: 100%; overflow: hidden;}
-#splash.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+#splash, #secondary-splash { position: fixed; top: 0; left: 0; right: 0; bottom: 0; width: 100%; height: 100%; z-index: 9999; background-color: var(--bg-cream); display: flex; flex-direction: column; align-items: center; justify-content: flex-end; padding-bottom: 50px; overflow: hidden; transition: opacity 1s ease, visibility 1s ease; }
+#secondary-splash { z-index: 9000; justify-content: center; }
 
-/* FOOLPROOF FULLSCREEN VIDEO FIX */
-#splash video, #secondary-splash video {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  min-width: 100%;
-  min-height: 100%;
-  width: auto;
-  height: auto;
-  transform: translate(-50%, -50%);
-  object-fit: cover;
-  pointer-events: none;
-}
+#splash.hidden, #secondary-splash.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+#secondary-splash.visible { opacity: 1; visibility: visible; pointer-events: auto; }
+
+#splash video, #secondary-splash video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center; pointer-events: none; z-index: 0; }
 
 #splash::before { content: ''; position: absolute; inset: 0; z-index: 1; pointer-events: none; background: linear-gradient(170deg, rgba(0,0,0,.15) 0%, rgba(26,51,34,.05) 50%, rgba(0,0,0,.2) 100%); }
 #splash::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 60%; z-index: 1; pointer-events: none; background: linear-gradient(to top, rgba(0,0,0,.5) 0%, rgba(0,0,0,.1) 65%, transparent 100%); }
-.splash-content { position: relative; z-index: 2; text-align: center; pointer-events: none; }
+.splash-content { position: relative; z-index: 2; text-align: center; width: 100%; pointer-events: none; }
 .splash-divider { display: flex; align-items: center; gap: 16px; justify-content: center; margin: 24px auto 0; opacity: 0; animation: fadeIn 1.4s .9s ease forwards; }
 .splash-divider span { width: 40px; height: 1px; background: var(--gold); opacity: .55; display: block; }
 .splash-divider i { color: var(--gold); font-size: 8px; letter-spacing: .2em; font-style: normal;}
-.splash-progress { position: absolute; bottom: 0; left: 0; right: 0; z-index: 3; height: 3px; background: rgba(212,175,55,.25); display: none; }
-.splash-progress-bar { height: 100%; background: linear-gradient(90deg, var(--gold), var(--gold-light)); width: 0%; transition: width 3s linear; }
+.splash-progress { position: absolute; bottom: 0; left: 0; right: 0; z-index: 3; height: 4px; background: rgba(212,175,55,.25); display: none; }
+.splash-progress-bar { height: 100%; background: linear-gradient(90deg, var(--gold), var(--gold-light)); width: 0%; transition: width 4s linear; } /* 5s duration */
 .splash-progress.running { display: block; }
 .splash-progress.running .splash-progress-bar { width: 100%; }
-.splash-hint { position: absolute; bottom: clamp(22px, 4vh, 44px); left: 50%; transform: translateX(-50%); z-index: 2; color: rgba(255,255,255,.8); font-size: 8px; letter-spacing: .45em; text-transform: uppercase; opacity: 0; animation: fadeIn 1s 1.6s ease forwards, hintPulse 2.6s 2.8s ease-in-out infinite; }
+.splash-hint { position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%); z-index: 2; color: rgba(255,255,255,.9); font-size: 9px; letter-spacing: .45em; text-transform: uppercase; opacity: 0; animation: fadeIn 1s 1.6s ease forwards, hintPulse 2.6s 2.8s ease-in-out infinite; cursor: pointer; }
 
-/* ═══════════════════════════════════════════════════
-   SECONDARY SPLASH SCREEN
-═══════════════════════════════════════════════════ */
-#secondary-splash { position: fixed; inset: 0; z-index: 9000; background: var(--bg-cream); height: 100vh; height: 100dvh; width: 100%; transition: opacity 0.5s ease, visibility 0.5s ease; overflow: hidden;}
-#secondary-splash.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
-#secondary-splash.visible { opacity: 1; visibility: visible; pointer-events: auto; }
+@keyframes hintPulse { 0%, 100% { opacity: .5 } 50% { opacity: 1 } }
+@keyframes fadeIn { to { opacity: 1; } }
+@keyframes fadeUp { from { opacity: 0; transform: translateY(26px); } to { opacity: 1; transform: translateY(0); } }
+
 /* ═══════════════════════════════════════════════════
    GUEST GATE
 ═══════════════════════════════════════════════════ */
-#gate { position: fixed; top: 0; left: 0; width: 100%; height: 100dvh; z-index: 8000; background: var(--bg-cream); display: none; flex-direction: column; align-items: center; justify-content: center; padding: 2rem; transition: opacity .9s ease, transform .9s ease; overflow: hidden; }
-#gate-bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center; z-index: 0; opacity: 0.6; pointer-events: none; }
+#gate { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 8000; background: var(--bg-cream); display: none; flex-direction: column; align-items: center; justify-content: center; padding: 2rem; transition: opacity .9s ease; overflow: hidden; }
+#gate-bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: 0; opacity: 0.6; pointer-events: none; }
 #gate.visible { display: flex; }
-#gate.hide { opacity: 0; transform: scale(1.04); pointer-events: none; }
+#gate.hide { opacity: 0; pointer-events: none; }
 #gate.gone { display: none !important; }
 #gate > * { position: relative; z-index: 1; }
 .gate-logo { max-width: 120px; height: auto; margin-bottom: 1.5rem; opacity: 0; animation: fadeUp 1s .1s forwards; }
-.gate-pretitle { font-family: 'Literaturnaya', 'Bodoni Moda', serif; font-size: clamp(0.6rem, 2vw, 0.75rem); letter-spacing: 0.25em; text-transform: uppercase; color: var(--burgundy); margin-bottom: 0.5rem; opacity: 0; animation: fadeUp 1s .2s forwards; }
+.gate-pretitle { font-family: 'Literaturnaya', 'Bodoni Moda', serif; font-size: 0.75rem; letter-spacing: 0.25em; text-transform: uppercase; color: var(--burgundy); margin-bottom: 0.5rem; opacity: 0; animation: fadeUp 1s .2s forwards; text-align: center;}
 .gate-divider { display: flex; align-items: center; gap: 1rem; width: 180px; margin-bottom: 1.5rem; opacity: 0; animation: fadeUp 1s .3s forwards; }
 .gate-divider hr { flex: 1; border: none; border-top: 1px solid rgba(77, 33, 33, 0.2); }
-.gate-divider i { color: rgba(77, 33, 33, 0.3); font-style: normal; font-size: 12px; }
-.gate-names-stacked { display: flex; flex-direction: column; align-items: center; gap: 1rem; margin-bottom: 1.5rem; opacity: 0; animation: fadeUp 1s .4s forwards; }
+.gate-divider i { color: rgba(77, 33, 33, 0.3); font-size: 12px; }
+.gate-names-stacked { display: flex; flex-direction: column; align-items: center; gap: 1rem; margin-bottom: 1.5rem; opacity: 0; animation: fadeUp 1s .4s forwards; width: 100%; }
 .name-block { display: flex; flex-direction: column; align-items: center; line-height: 0.8; }
-.name-first { font-family: 'Bodoni Moda', serif; font-size: clamp(2rem, 8vw, 3.2rem); text-transform: uppercase; letter-spacing: 0.1em; color: var(--burgundy); z-index: 1; }
-.name-last { font-family: 'Diploma Script Pro', 'Sloop Script Pro', cursive; font-size: clamp(2.5rem, 10vw, 4rem); color: var(--burgundy); margin-top: -15px; z-index: 2; }
+.name-first { font-family: 'Bodoni Moda', serif; font-size: clamp(2rem, 6vw, 3rem); text-transform: uppercase; letter-spacing: 0.1em; color: var(--burgundy); z-index: 1; }
+.name-last { font-family: 'Diploma Script Pro', 'Sloop Script Pro', cursive; font-size: clamp(2.5rem, 8vw, 3.5rem); color: var(--burgundy); margin-top: -15px; z-index: 2; }
 .gate-amp { font-family: 'Bodoni Moda', serif; font-size: 1.5rem; color: var(--burgundy); }
-.gate-subtitle { font-family: 'Literaturnaya', 'Cormorant Garamond', serif; font-style: italic; font-size: clamp(1rem, 3vw, 1.2rem); color: var(--burgundy); margin-bottom: 1rem; opacity: 0; animation: fadeUp 1s .5s forwards; }
-.gate-form { display: flex; flex-direction: column; align-items: center; width: min(360px, 90vw); opacity: 0; animation: fadeUp 1s .7s forwards; }
+.gate-form { display: flex; flex-direction: column; align-items: center; width: min(360px, 100%); opacity: 0; animation: fadeUp 1s .7s forwards; }
 .gate-form label { font-family: 'Literaturnaya', serif; font-size: 0.75rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--burgundy); margin-bottom: 0.5rem; text-align: center; }
-.gate-form input[type="text"] { width: 100%; padding: 0.5rem 0; background: transparent; border: none; border-bottom: 1px solid var(--burgundy); border-radius: 0; font-family: 'Literaturnaya', serif; font-size: 1rem; color: var(--burgundy); text-align: center; outline: none; margin-bottom: 1.5rem; transition: border-bottom-width .3s; }
+.gate-form input[type="text"] { width: 100%; padding: 0.5rem 0; background: transparent; border: none; border-bottom: 1px solid var(--burgundy); border-radius: 0; font-family: 'Literaturnaya', serif; font-size: 16px; color: var(--burgundy); text-align: center; outline: none; margin-bottom: 1.5rem; transition: border-bottom-width .3s; }
 .gate-form input:focus { border-bottom: 2px solid var(--burgundy); }
-.btn-open { width: 100%; padding: 1.2rem 2rem; background: var(--burgundy); color: #fff; border: none; border-radius: 6px; font-family: 'Literaturnaya', serif; font-weight: 400; font-size: 0.8rem; letter-spacing: 0.2em; text-transform: uppercase; cursor: pointer; transition: transform .25s, opacity .25s; }
-.btn-open:hover { transform: translateY(-2px); opacity: 0.9; }
+.btn-open { width: 100%; padding: 1.2rem; background: var(--burgundy); color: #fff; border: none; border-radius: 4px; font-family: 'Literaturnaya', serif; font-size: 0.8rem; letter-spacing: 0.2em; text-transform: uppercase; cursor: pointer; transition: background 0.3s; }
+.btn-open:hover { background: #3a1818; }
 
 /* ═══════════════════════════════════════════════════
    HEADER
 ═══════════════════════════════════════════════════ */
-#site-header { position: fixed; top: 0; left: 0; right: 0; z-index: 500; height: 90px; background: var(--header-bg); transition: transform .5s ease; display: flex; align-items: center; padding: 0 clamp(20px, 5vw, 60px); gap: 1.2rem; transform: translateY(-100%); box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+#site-header { position: fixed; top: 0; left: 0; width: 100%; z-index: 500; height: 90px; background: var(--header-bg); display: flex; align-items: center; padding: 0 clamp(16px, 5vw, 60px); gap: 1.2rem; transform: translateY(-100%); transition: transform .5s ease; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
 #site-header.show { transform: translateY(0); }
-.header-logo { max-height: 70px; max-width: 140px; width: auto; height: auto; object-fit: contain; flex-shrink: 0; margin-right: auto; display: block; }
-.header-nav { display: flex; align-items: center; gap: clamp(15px, 2.5vw, 40px); flex-shrink: 0; }
-.header-nav a { font-size: clamp(9px, 1.2vw, 11px); letter-spacing: .25em; text-transform: uppercase; color: #333; text-decoration: none; font-weight: 400; white-space: nowrap; transition: color .2s; position: relative; }
-.header-nav > a::after, .nav-dropdown > a::after { content: ''; position: absolute; bottom: -5px; left: 0; right: 0; height: 1px; background: var(--gold); transform: scaleX(0); transform-origin: left; transition: transform .3s ease; }
-.header-nav a:hover, .nav-dropdown:hover > a { color: var(--gold); }
-.header-nav > a:hover::after, .nav-dropdown:hover > a::after { transform: scaleX(1); }
-.nav-dropdown { position: relative; display: inline-block; padding: 20px 0; }
-.dropdown-content { display: none; position: absolute; top: 100%; left: 50%; transform: translateX(-50%); background-color: var(--header-bg); min-width: 280px; box-shadow: 0 8px 16px rgba(0,0,0,0.05); padding: 15px 0; border-radius: 2px; z-index: 501; }
-.nav-dropdown:hover .dropdown-content { display: flex; flex-direction: column; }
-.dropdown-content a { color: #333; padding: 10px 20px; text-decoration: none; font-size: 9px; letter-spacing: .2em; text-transform: uppercase; text-align: center; transition: background-color 0.3s, color 0.3s; }
-.dropdown-content a:hover { background-color: rgba(181, 156, 122, 0.1); color: var(--gold); }
-.dropdown-content a::after { display: none; } 
+.header-logo { max-height: 70px; max-width: 140px; object-fit: contain; margin-right: auto; display: block; }
+.header-nav { display: flex; align-items: center; gap: clamp(10px, 2.5vw, 30px); }
+.header-nav a { font-size: 10px; letter-spacing: .2em; text-transform: uppercase; color: #333; text-decoration: none; position: relative; }
+.header-nav > a::after { content: ''; position: absolute; bottom: -5px; left: 0; right: 0; height: 1px; background: var(--gold); transform: scaleX(0); transform-origin: left; transition: transform .3s ease; }
+.header-nav a:hover { color: var(--gold); }
+.header-nav > a:hover::after { transform: scaleX(1); }
 .nav-toggle { display: none; flex-direction: column; gap: 6px; cursor: pointer; background: none; border: none; padding: 10px; }
 .nav-toggle span { display: block; width: 25px; height: 1.5px; background: #333; transition: all .3s; }
-.nav-drawer { position: fixed; top: 90px; left: 0; right: 0; background: var(--header-bg); display: flex; flex-direction: column; align-items: center; gap: 0; z-index: 499; max-height: 0; overflow: hidden; transition: max-height .4s ease; border-bottom: 1px solid rgba(0,0,0,.05); }
+.nav-drawer { position: fixed; top: 90px; left: 0; width: 100%; background: var(--header-bg); display: flex; flex-direction: column; align-items: center; z-index: 499; max-height: 0; overflow: hidden; transition: max-height .4s ease; border-bottom: 1px solid rgba(0,0,0,.05); }
 .nav-drawer.open { max-height: 80vh; overflow-y: auto; }
-.nav-drawer a { padding: 1.2rem 2rem; width: 100%; text-align: center; font-size: .8rem; letter-spacing: .3em; text-transform: uppercase; color: #333; text-decoration: none; border-bottom: 1px solid rgba(0,0,0,.03); }
-.nav-drawer a:hover { color: var(--gold); background: rgba(0,0,0,.03); }
-.drawer-section-title { font-size: .85rem; letter-spacing: .35em; color: var(--gold); margin-top: 1rem; padding: 0.5rem 0; text-transform: uppercase; }
+.nav-drawer a { padding: 1rem 2rem; width: 100%; text-align: center; font-size: .8rem; letter-spacing: .2em; text-transform: uppercase; color: #333; text-decoration: none; border-bottom: 1px solid rgba(0,0,0,.03); }
+.drawer-section-title { font-size: .85rem; letter-spacing: .3em; color: var(--gold); margin-top: 1rem; padding: 0.5rem 0; text-transform: uppercase; }
 
 /* ═══════════════════════════════════════════════════
    MAIN WRAPPER & SECTIONS
 ═══════════════════════════════════════════════════ */
-#main { min-height: 100vh; background: var(--bg-cream); position: relative; display: none; opacity: 0; transition: opacity .8s ease; }
+#main { min-height: 100vh; background: var(--bg-cream); position: relative; display: none; opacity: 0; transition: opacity .8s ease; width: 100%; }
 #main.visible { display: block; }
 #main.show { opacity: 1; }
 #main::before { content: ''; position: fixed; inset: 0; background: linear-gradient(180deg, rgba(239,238,233,.55) 0%, rgba(239,238,233,.18) 40%, rgba(239,238,233,.5) 100%); pointer-events: none; z-index: 0; }
-section { position: relative; z-index: 1; }
-.section-wrapper { max-width: 1100px; margin: 0 auto; padding: 90px 32px; }
-.section-label { text-align: center; font-size: 9px; letter-spacing: .55em; text-transform: uppercase; color: var(--gold); margin-bottom: 10px; }
-.section-title { text-align: center; font-family: 'Bodoni Moda', serif; font-size: clamp(28px, 5vw, 44px); color: var(--burgundy); margin-bottom: 10px; letter-spacing: .08em; text-transform: uppercase; }
-.section-rule { width: 60px; height: 1px; background: var(--gold); margin: 0 auto 16px; opacity: .5; }
-.section-sub { text-align: center; font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: clamp(15px, 2.5vw, 18px); color: var(--ink-mid); margin-bottom: 60px; }
+section { position: relative; z-index: 1; width: 100%; }
+.section-wrapper { max-width: 1000px; margin: 0 auto; padding: 90px 20px; width: 100%; }
+.section-label { text-align: center; font-size: 10px; letter-spacing: .4em; text-transform: uppercase; color: var(--gold); margin-bottom: 10px; }
+.section-title { text-align: center; font-family: 'Bodoni Moda', serif; font-size: clamp(24px, 4vw, 36px); color: var(--burgundy); margin-bottom: 15px; letter-spacing: .08em; text-transform: uppercase; }
+.section-rule { width: 50px; height: 1px; background: var(--gold); margin: 0 auto 20px; opacity: .5; }
+.section-sub { text-align: center; font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: clamp(16px, 2.5vw, 18px); color: var(--ink-mid); margin-bottom: 50px; }
 
 /* ═══════════════════════════════════════════════════
    HERO
 ═══════════════════════════════════════════════════ */
-#hero { min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: calc(90px + 60px) 24px 70px; position: relative; }
-.hero-eyebrow { font-family: 'Literaturnaya', serif; font-size: clamp(0.7rem, 2vw, 0.85rem); letter-spacing: 0.3em; text-transform: uppercase; color: #333; margin-bottom: 22px; opacity: 0; animation: fadeUp 1.2s .2s ease forwards; }
-.hero-names-stacked { display: flex; flex-direction: column; align-items: center; gap: 5px; opacity: 0; animation: fadeUp 1.2s .6s ease forwards; margin-bottom: 25px; }
-.partner-name { font-family: 'Bodoni Moda', serif; font-size: clamp(3rem, 10vw, 5rem); color: var(--burgundy); letter-spacing: 0.1em; line-height: 1; text-transform: uppercase; }
+#hero { min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: calc(90px + 40px) 20px 60px; }
+.hero-eyebrow { font-family: 'Literaturnaya', serif; font-size: 0.8rem; letter-spacing: 0.3em; text-transform: uppercase; color: #333; margin-bottom: 20px; opacity: 0; animation: fadeUp 1.2s .2s ease forwards; }
+.hero-names-stacked { display: flex; flex-direction: column; align-items: center; gap: 5px; opacity: 0; animation: fadeUp 1.2s .6s ease forwards; margin-bottom: 25px; width: 100%; }
+.partner-name { font-family: 'Bodoni Moda', serif; font-size: clamp(2.5rem, 8vw, 4.5rem); color: var(--burgundy); letter-spacing: 0.1em; line-height: 1; text-transform: uppercase; }
 .hero-amp { font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: clamp(2rem, 5vw, 3rem); color: var(--gold); line-height: 1; }
-.hero-invite-text { font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: clamp(1.2rem, 3vw, 1.5rem); color: #555; letter-spacing: 0.05em; line-height: 1.6; opacity: 0; animation: fadeUp 1.2s 0.8s ease forwards; margin-bottom: 40px; }
+.hero-invite-text { font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: clamp(1.2rem, 3vw, 1.5rem); color: #555; letter-spacing: 0.05em; line-height: 1.6; opacity: 0; animation: fadeUp 1.2s 0.8s ease forwards; margin-bottom: 40px;}
 
-.hero-dates-wrapper { display: flex; gap: 2rem; justify-content: center; flex-wrap: wrap; margin-bottom: 40px; opacity: 0; animation: fadeUp 1.2s 1s ease forwards; }
-.hero-date-box { background: #fff; border: 1px solid rgba(181, 156, 122, 0.3); padding: 1.5rem 2.5rem; text-align: center; display: flex; flex-direction: column; gap: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); }
-.hd-date { font-family: 'Bodoni Moda', serif; font-size: 1.8rem; color: var(--burgundy); }
+.hero-dates-wrapper { display: flex; gap: 1.5rem; justify-content: center; flex-wrap: wrap; margin-bottom: 40px; opacity: 0; animation: fadeUp 1.2s 1s ease forwards; width: 100%; max-width: 800px;}
+.hero-date-box { background: #fff; border: 1px solid rgba(181, 156, 122, 0.3); padding: 1.5rem; text-align: center; display: flex; flex-direction: column; gap: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); flex: 1; min-width: 250px;}
+.hd-date { font-family: 'Bodoni Moda', serif; font-size: 1.5rem; color: var(--burgundy); }
 .hd-names { font-size: 0.7rem; letter-spacing: 0.2em; color: var(--gold); text-transform: uppercase; }
-.hd-loc { font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 1.2rem; color: var(--ink-mid); }
+.hd-loc { font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 1.1rem; color: var(--ink-mid); }
 
 .btn-read-story { display: inline-block; padding: 1rem 2.5rem; border: 1px solid var(--burgundy); color: var(--burgundy); font-family: 'Literaturnaya', serif; font-size: 0.8rem; letter-spacing: 0.2em; text-transform: uppercase; text-decoration: none; transition: all 0.3s ease; margin-bottom: 60px; opacity: 0; animation: fadeUp 1.2s 1.1s ease forwards; }
 .btn-read-story:hover { background: var(--burgundy); color: #fff; }
 
-.hero-welcome-block { max-width: 680px; margin: 0 auto; text-align: center; padding: 40px; background: #fff; border: 1px solid rgba(181, 156, 122, 0.3); box-shadow: 0 10px 40px rgba(0,0,0,0.03); }
-.hero-welcome-block p { font-family: 'Literaturnaya', serif; font-size: 1rem; color: #444; line-height: 1.9; margin-bottom: 1.5rem; }
-.welcome-greeting { font-family: 'Bodoni Moda', serif !important; font-size: 1.5rem !important; color: var(--burgundy) !important; letter-spacing: 0.05em; margin-bottom: 2rem !important; }
-.welcome-signoff { margin-top: 2.5rem; font-family: 'Cormorant Garamond', serif !important; font-style: italic; font-size: 1.2rem !important; color: #555 !important; }
-.welcome-signoff strong { display: block; margin-top: 10px; font-family: 'Sloop Script Pro', 'Blosta Script', cursive; font-size: 2.5rem; font-style: normal; font-weight: normal; color: var(--burgundy); }
+.hero-welcome-block { width: 100%; max-width: 680px; margin: 0 auto; text-align: center; padding: 40px 20px; background: #fff; border: 1px solid rgba(181, 156, 122, 0.3); box-shadow: 0 10px 40px rgba(0,0,0,0.03); opacity: 0; animation: fadeUp 1.2s 1.2s ease forwards; }
+.hero-welcome-block p { font-family: 'Literaturnaya', serif; font-size: 0.95rem; color: #444; line-height: 1.9; margin-bottom: 1.5rem; }
+.welcome-greeting { font-family: 'Bodoni Moda', serif !important; font-size: 1.4rem !important; color: var(--burgundy) !important; letter-spacing: 0.05em; margin-bottom: 1.5rem !important; }
+.welcome-signoff { margin-top: 2rem; font-family: 'Cormorant Garamond', serif !important; font-style: italic; font-size: 1.1rem !important; color: #555 !important; }
+.welcome-signoff strong { display: block; margin-top: 10px; font-family: 'Sloop Script Pro', 'Blosta Script', cursive; font-size: clamp(2rem, 6vw, 2.5rem); font-style: normal; font-weight: normal; color: var(--burgundy); }
 
 /* ═══════════════════════════════════════════════════
    OUR STORY 
 ═══════════════════════════════════════════════════ */
-#our-story { padding: calc(var(--hh) + 60px) 32px 80px; background: var(--beige-dark); }
-.story-container { max-width: 800px; margin: 0 auto; text-align: center; }
-.story-text-block { text-align: left; margin-bottom: 60px; }
-.story-text-block p { font-family: 'Cormorant Garamond', serif; font-size: clamp(1.1rem, 2vw, 1.25rem); color: var(--ink-mid); line-height: 1.9; margin-bottom: 1.2rem; text-align: center; }
+#our-story { background: var(--beige-dark); }
+.story-container { max-width: 800px; width: 100%; margin: 0 auto; text-align: center; padding: 0 15px;}
+.story-text-block { text-align: left; margin-bottom: 50px; }
+.story-text-block p { font-family: 'Cormorant Garamond', serif; font-size: clamp(1rem, 2.5vw, 1.2rem); color: var(--ink-mid); line-height: 1.9; margin-bottom: 1rem; text-align: center; }
 
-.story-hero-img { width: 100%; max-width: 600px; margin: 0 auto; border-radius: 4px; position: relative; }
+.story-hero-img { width: 100%; max-width: 500px; margin: 0 auto; border-radius: 4px; position: relative; }
 .story-hero-img img { width: 100%; height: auto; aspect-ratio: 4/5; object-fit: cover; display: block; border-radius: 4px; box-shadow: 0 16px 60px rgba(0,0,0,.1); }
-.story-hero-img::after { content: ''; position: absolute; inset: -12px; border: 1.5px solid rgba(212,175,55,.4); border-radius: 6px; pointer-events: none; z-index: 1; }
+.story-hero-img::after { content: ''; position: absolute; inset: -8px; border: 1.5px solid rgba(212,175,55,.4); border-radius: 6px; pointer-events: none; z-index: 1; }
 
 /* ═══════════════════════════════════════════════════
-   TRAVEL & STAY
+   THE CELEBRATIONS (Separated Event Hubs)
 ═══════════════════════════════════════════════════ */
-#travel-stay { background: var(--bg-cream); }
-.travel-destination { margin-bottom: 60px; }
-.travel-dest-header { display: flex; align-items: center; gap: 16px; margin-bottom: 32px; }
+.event-hub-title { font-family: 'Bodoni Moda', serif; font-size: clamp(1.8rem, 4vw, 2.5rem); color: var(--burgundy); text-align: center; margin: 60px 0 20px; letter-spacing: 0.1em; text-transform: uppercase; }
+.event-hub-date { text-align: center; font-size: 0.85rem; letter-spacing: 0.3em; color: var(--gold); text-transform: uppercase; margin-bottom: 40px; }
+
+.travel-destination { margin-bottom: 50px; width: 100%; }
+.travel-dest-header { display: flex; align-items: center; gap: 16px; margin-bottom: 24px; }
 .travel-dest-header hr { flex: 1; border: none; border-top: 1px solid rgba(181, 156, 122, 0.4); }
-.travel-dest-header h3 { font-family: 'Bodoni Moda', serif; font-size: clamp(1.2rem, 2.5vw, 1.6rem); color: var(--burgundy); letter-spacing: .08em; white-space: nowrap; }
-.travel-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.8rem; }
-.travel-card { background: #fff; border: 1px solid var(--card-border); padding: 2rem; text-align: center; transition: transform .3s, box-shadow .3s; box-shadow: 0 4px 15px rgba(0,0,0,0.03); }
-.travel-card:hover { transform: translateY(-5px); box-shadow: 0 15px 35px rgba(0,0,0,0.08); }
-.travel-card-label { font-size: 8px; letter-spacing: .45em; text-transform: uppercase; color: var(--gold); margin-bottom: 8px; }
-.travel-card-title { font-family: 'Bodoni Moda', serif; font-size: 1.4rem; color: var(--burgundy); margin-bottom: 15px; }
+.travel-dest-header h3 { font-family: 'Bodoni Moda', serif; font-size: clamp(1.1rem, 2.5vw, 1.4rem); color: var(--burgundy); letter-spacing: .08em; text-align: center; }
+
+.travel-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 1.5rem; }
+.travel-card { background: #fff; border: 1px solid var(--card-border); padding: 2rem 1.5rem; text-align: center; transition: transform .3s, box-shadow .3s; box-shadow: 0 4px 15px rgba(0,0,0,0.03); width: 100%; }
+.travel-card:hover { transform: translateY(-4px); box-shadow: 0 10px 30px rgba(0,0,0,0.06); }
+.travel-card-label { font-size: 8px; letter-spacing: .3em; text-transform: uppercase; color: var(--gold); margin-bottom: 8px; }
+.travel-card-title { font-family: 'Bodoni Moda', serif; font-size: 1.3rem; color: var(--burgundy); margin-bottom: 12px; }
 .travel-card p { font-size: 0.9rem; color: var(--ink-light); line-height: 1.8; margin-bottom: 10px; }
 .travel-card strong { color: var(--burgundy); }
-.btn-utility { display: inline-block; padding: 0.7rem 1.5rem; background: var(--gold); color: #fff; text-decoration: none; font-size: 0.75rem; letter-spacing: 0.15em; text-transform: uppercase; border-radius: 4px; transition: background 0.3s; margin: 10px 5px; }
+
+.btn-utility { display: inline-block; padding: 0.7rem 1.2rem; background: var(--gold); color: #fff; text-decoration: none; font-size: 0.7rem; letter-spacing: 0.15em; text-transform: uppercase; border-radius: 4px; transition: background 0.3s; margin: 5px; }
 .btn-utility:hover { background: var(--burgundy); }
 
 .map-container { width: 100%; max-width: 500px; margin: 20px auto; mix-blend-mode: multiply; }
-.map-container img { width: 100%; height: auto; }
+.map-container img { width: 100%; height: auto; display: block; border-radius: 4px; }
+.full-width-image { width: 100%; height: auto; display: block; border-radius: 4px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
 
 /* ═══════════════════════════════════════════════════
    INFO & DRESS CODE
 ═══════════════════════════════════════════════════ */
 #info { background: var(--beige); }
-.info-text-block { max-width: 800px; margin: 0 auto 50px; text-align: center; font-family: 'Cormorant Garamond', serif; font-size: 1.15rem; line-height: 1.8; color: var(--ink-mid); }
+.info-text-block { max-width: 800px; width: 100%; margin: 0 auto 40px; text-align: center; font-family: 'Cormorant Garamond', serif; font-size: 1.15rem; line-height: 1.8; color: var(--ink-mid); }
 .color-palette { display: flex; justify-content: center; gap: 15px; margin: 30px 0; flex-wrap: wrap; }
-.color-swatch { width: 100px; height: 100px; border-radius: 4px; display: flex; align-items: flex-end; justify-content: center; padding-bottom: 10px; color: #fff; font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase; text-shadow: 0 1px 3px rgba(0,0,0,0.5); }
+.color-swatch { width: 90px; height: 90px; border-radius: 4px; display: flex; align-items: flex-end; justify-content: center; padding-bottom: 10px; color: #fff; font-size: 0.65rem; letter-spacing: 0.1em; text-transform: uppercase; text-shadow: 0 1px 3px rgba(0,0,0,0.5); }
 
 /* ═══════════════════════════════════════════════════
    FAQ
 ═══════════════════════════════════════════════════ */
-#faq { background: var(--bg-cream); }
-.faq-layout { max-width: 900px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; }
-.faq-col-title { font-family: 'Bodoni Moda', serif; font-size: 1.2rem; color: var(--burgundy); letter-spacing: .1em; margin-bottom: 1.6rem; display: flex; align-items: center; gap: 10px; }
+.faq-layout { max-width: 900px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 2.5rem; }
+.faq-col-title { font-family: 'Bodoni Moda', serif; font-size: 1.1rem; color: var(--burgundy); letter-spacing: .1em; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 10px; }
 .faq-col-title::after { content: ''; flex: 1; height: 1px; background: rgba(181, 156, 122, 0.4); }
 .faq-item { border-bottom: 1px solid var(--card-border); overflow: hidden; }
-.faq-question { width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 1.1rem 0; background: none; border: none; cursor: pointer; text-align: left; font-family: 'Raleway', sans-serif; font-size: 0.95rem; color: var(--ink-mid); font-weight: 500; transition: color .2s; }
+.faq-question { width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 1rem 0; background: none; border: none; cursor: pointer; text-align: left; font-family: 'Raleway', sans-serif; font-size: 0.9rem; color: var(--ink-mid); font-weight: 500; transition: color .2s; }
 .faq-question:hover { color: var(--burgundy); }
 .faq-icon { flex-shrink: 0; width: 20px; height: 20px; border: 1px solid var(--gold); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--gold); font-size: .7rem; transition: transform .3s, background .2s; }
 .faq-item.open .faq-icon { transform: rotate(45deg); background: var(--burgundy); border-color: var(--burgundy); color: #fff; }
-.faq-answer { max-height: 0; overflow: hidden; font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 1rem; color: var(--ink-light); line-height: 1.8; transition: max-height .4s ease, padding .3s ease; padding: 0; }
+.faq-answer { max-height: 0; overflow: hidden; font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 0.95rem; color: var(--ink-light); line-height: 1.7; transition: max-height .4s ease, padding .3s ease; padding: 0; }
 .faq-item.open .faq-answer { max-height: 300px; padding: 0 0 1.2rem 0; }
 
 /* ═══════════════════════════════════════════════════
-   RSVP PAGE (Merlot Red Theme)
+   RSVP PAGE (Merlot Red Theme with Split Events)
 ═══════════════════════════════════════════════════ */
-#rsvp-page { min-height: 100vh; background: var(--merlot); display: flex; align-items: center; justify-content: center; padding: calc(90px + 60px) 24px 80px; position: relative; overflow: hidden;}
-.rsvp-inner { max-width: 720px; width: 100%; position: relative; z-index: 1; }
-.rsvp-header { text-align: center; margin-bottom: 3.5rem; }
-.rsvp-header h2 { font-family: 'Bodoni Moda', serif; font-size: clamp(2.5rem, 6vw, 4rem); color: #fff; letter-spacing: .1em; font-style: italic; }
-.rsvp-header p { font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 1.2rem; color: rgba(255,255,255,0.85); line-height: 1.85; max-width: 520px; margin: 1.5rem auto 0; }
+#rsvp-page { background: var(--merlot); display: flex; flex-direction: column; align-items: center; padding: 100px 15px; position: relative; overflow: hidden;}
+.rsvp-inner { max-width: 760px; width: 100%; position: relative; z-index: 1; }
+.rsvp-header { text-align: center; margin-bottom: 3rem; }
+.rsvp-header h2 { font-family: 'Bodoni Moda', serif; font-size: clamp(2.5rem, 6vw, 3.5rem); color: #fff; letter-spacing: .1em; font-style: italic; margin-bottom: 1rem;}
+.rsvp-header p { font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 1.15rem; color: rgba(255,255,255,0.85); line-height: 1.8; max-width: 580px; margin: 0 auto; }
 
-.rsvp-card { background: rgba(0,0,0,0.15); border: 1px solid rgba(255,255,255,0.2); padding: 3.5rem 3rem; box-shadow: 0 15px 50px rgba(0,0,0,0.2); border-radius: 4px; position: relative; backdrop-filter: blur(10px); }
+.rsvp-card { background: rgba(0,0,0,0.15); border: 1px solid rgba(255,255,255,0.2); padding: 3rem 2rem; box-shadow: 0 15px 50px rgba(0,0,0,0.2); border-radius: 4px; position: relative; backdrop-filter: blur(10px); width: 100%; }
+
+/* Event Specific RSVP Blocks */
+.rsvp-event-box { background: rgba(255,255,255,0.05); border: 1px solid rgba(212,175,55,0.3); border-radius: 4px; padding: 1.5rem; margin-bottom: 2rem; }
+.rsvp-event-header { font-family: 'Bodoni Moda', serif; font-size: 1.2rem; color: var(--gold); letter-spacing: 0.1em; margin-bottom: 1.2rem; text-align: center; text-transform: uppercase; border-bottom: 1px solid rgba(212,175,55,0.2); padding-bottom: 10px;}
+
 .form-row { display: flex; gap: 1.2rem; flex-wrap: wrap; }
 .form-group { flex: 1 1 200px; display: flex; flex-direction: column; gap: .4rem; margin-bottom: 1.4rem; }
 .form-group.full { flex-basis: 100%; }
 
-/* High contrast text and inputs for the dark background */
+/* HIGH CONTRAST TEXT & 16px FONT SIZE FOR iOS ZOOM FIX */
 .form-group label { font-family: 'Literaturnaya', serif; font-size: 0.85rem; color: #fff; font-weight: 500; letter-spacing: 0.05em; }
 .form-group label .req { color: #e5b0b0; }
-.form-group input[type="text"], .form-group input[type="email"], .form-group select, .form-group textarea { padding: .85rem 1.1rem; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.3); border-radius: 4px; font-family: 'Raleway', sans-serif; font-size: 0.9rem; color: #fff; outline: none; transition: border-color .3s; width: 100%; }
+.form-group input[type="text"], .form-group input[type="email"], .form-group select, .form-group textarea { padding: .85rem 1rem; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.3); border-radius: 4px; font-family: 'Raleway', sans-serif; font-size: 16px !important; color: #fff; outline: none; transition: border-color .3s; width: 100%; appearance: none; box-sizing: border-box;}
 .form-group input::placeholder, .form-group textarea::placeholder { color: rgba(255,255,255,0.5); }
 .form-group textarea { resize: vertical; }
-.form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: var(--gold); box-shadow: 0 0 0 2px rgba(181, 156, 122, 0.2); }
+.form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: var(--gold); box-shadow: 0 0 0 2px rgba(181, 156, 122, 0.2); background: rgba(255,255,255,0.15);}
 
 .radio-group { display: flex; flex-direction: column; gap: 0.8rem; margin-top: 5px; }
-.radio-label { display: flex; align-items: center; gap: 0.6rem; cursor: pointer; font-size: 0.95rem; color: #fff; }
-.radio-label input[type="radio"], .radio-label input[type="checkbox"] { width: 18px; height: 18px; accent-color: var(--gold); cursor: pointer; }
+.radio-label { display: flex; align-items: flex-start; gap: 0.6rem; cursor: pointer; font-size: 0.95rem; color: #fff; line-height: 1.4;}
+.radio-label input[type="radio"], .radio-label input[type="checkbox"] { width: 18px; height: 18px; accent-color: var(--gold); cursor: pointer; flex-shrink: 0; margin-top: 2px;}
 .form-divider { height: 1px; background: rgba(255,255,255,0.2); margin: 2rem 0; }
 
-.btn-submit { width: 100%; padding: 1.2rem; background: #fff; color: var(--merlot); border: none; border-radius: 4px; font-family: 'Bodoni Moda', serif; font-size: 1.1rem; letter-spacing: 0.15em; text-transform: uppercase; cursor: pointer; transition: background 0.3s, transform 0.2s, color 0.3s; margin-top: 1rem; }
+.btn-submit { width: 100%; padding: 1.2rem; background: #fff; color: var(--merlot); border: none; border-radius: 4px; font-family: 'Bodoni Moda', serif; font-size: 1rem; letter-spacing: 0.15em; text-transform: uppercase; cursor: pointer; transition: background 0.3s, transform 0.2s; margin-top: 1rem; }
 .btn-submit:hover { background: var(--gold); color: #fff; transform: translateY(-2px); }
 
-#rsvp-success { display: none; text-align: center; padding: 4rem 2rem; }
+#rsvp-success { display: none; text-align: center; padding: 3rem 1rem; }
 #rsvp-success.show { display: block; }
-.success-icon { font-size: 3.5rem; color: var(--gold); margin-bottom: 1rem; }
-#rsvp-success h3 { font-family: 'Bodoni Moda', serif; font-size: 2.5rem; color: #fff; margin-bottom: .8rem; }
-#rsvp-success p { font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 1.15rem; color: rgba(255,255,255,0.85); line-height: 1.75; }
+.success-icon { font-size: 3rem; color: var(--gold); margin-bottom: 1rem; }
+#rsvp-success h3 { font-family: 'Bodoni Moda', serif; font-size: 2.2rem; color: #fff; margin-bottom: .8rem; }
+#rsvp-success p { font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 1.1rem; color: rgba(255,255,255,0.85); line-height: 1.75; }
 
 /* Confetti Overlay */
 .confetti { position: absolute; width: 10px; height: 10px; background-color: var(--gold); opacity: 0; animation: fall 3s linear forwards; pointer-events: none; z-index: 100;}
@@ -281,65 +265,58 @@ section { position: relative; z-index: 1; }
 .audio-btn { width: 50px; height: 50px; background: var(--burgundy); border: none; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; color: #fff; font-size: 1.1rem; box-shadow: 0 4px 20px rgba(0,0,0,.2); transition: transform .25s; }
 .audio-btn:hover { transform: scale(1.1); }
 .audio-lbl { font-size: 7px; letter-spacing: .2em; text-transform: uppercase; color: var(--ink-mid); background: rgba(255,255,255,.8); padding: 2px 8px; border-radius: 50px; }
-footer { text-align: center; padding: 44px 24px 64px; font-size: 9px; letter-spacing: .4em; color: var(--ink-light); text-transform: uppercase; background: var(--bg-cream); line-height: 2.4; }
-.footer-rule { width: 80px; height: 1px; background: var(--card-border); margin: 0 auto 22px; }
-.footer-names { font-family: 'Bodoni Moda', serif; font-style: italic; font-size: 1.5rem; color: var(--burgundy); letter-spacing: .06em; margin-bottom: 6px; text-transform: none; }
+footer { text-align: center; padding: 40px 20px 60px; font-size: 9px; letter-spacing: .4em; color: var(--ink-light); text-transform: uppercase; background: var(--bg-cream); line-height: 2.4; width: 100%;}
+.footer-rule { width: 80px; height: 1px; background: var(--card-border); margin: 0 auto 20px; }
+.footer-names { font-family: 'Bodoni Moda', serif; font-style: italic; font-size: 1.4rem; color: var(--burgundy); letter-spacing: .06em; margin-bottom: 6px; text-transform: none; }
 .footer-credit a { color: var(--gold); text-decoration: none; }
 
 /* ═══════════════════════════════════════════════════
-   SCROLL REVEAL & RESPONSIVE
+   RESPONSIVE
 ═══════════════════════════════════════════════════ */
-.reveal { opacity: 0; transform: translateY(32px); transition: opacity .9s ease, transform .9s ease; }
-.reveal.visible { opacity: 1; transform: none; }
-.reveal-d1 { transition-delay: .1s } .reveal-d2 { transition-delay: .2s } .reveal-d3 { transition-delay: .3s }
-@keyframes fadeUp { from { opacity: 0; transform: translateY(26px); } to { opacity: 1; transform: translateY(0); } }
-@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-
 @media(max-width: 900px) {
   .faq-layout { grid-template-columns: 1fr; }
 }
 @media(max-width: 1024px) {
-  #site-header { height: 78px; padding: 0 16px; }
-  .header-logo { max-height: 56px; max-width: 110px; }
+  #site-header { height: 70px; padding: 0 16px; }
+  .header-logo { max-height: 50px; max-width: 100px; }
   .header-nav { display: none; }
   .nav-toggle { display: flex; margin-left: auto; }
-  .nav-drawer { top: 78px; }
-  :root { --hh: 78px; }
-  .section-wrapper { padding: 70px 20px; }
-  #our-story { padding: calc(var(--hh) + 42px) 20px 62px; }
-  .hero-welcome-block { padding: 26px 22px; }
-  .rsvp-card { padding: 2.3rem 1.5rem; }
-  .travel-grid { grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); }
+  .nav-drawer { top: 70px; }
+  :root { --hh: 70px; }
+  .section-wrapper { padding: 70px 16px; }
 }
 @media(max-width: 600px) {
-  #hero { padding: calc(90px + 30px) 18px 56px; }
-  .partner-name { font-size: clamp(40px, 12vw, 56px); }
-  .hero-amp { font-size: clamp(32px, 8vw, 42px); }
-  .hero-dates-wrapper { flex-direction: column; gap: 1rem; }
-  .hero-date-box { width: 100%; padding: 1.2rem; }
-  .hero-welcome-block { padding: 22px 16px; }
-  .story-text-block p { font-size: 1.05rem; }
-  .travel-card { padding: 1.4rem; }
+  #hero { padding: calc(90px + 20px) 16px 50px; }
+  .hero-dates-wrapper { flex-direction: column; gap: 1rem;}
+  
+  .travel-grid { grid-template-columns: 1fr; gap: 1.2rem;}
+  .travel-card { padding: 1.5rem; }
+  
   .form-group { flex-basis: 100%; }
-  .rsvp-card { padding: 1.8rem 1rem; }
-  .splash-hint { letter-spacing: .22em; font-size: 10px; bottom: max(14px, env(safe-area-inset-bottom, 0px) + 8px); }
-  .gate-names { font-size: clamp(1.8rem, 8vw, 2.5rem); gap: 5px; }
-  #rsvp-page { padding: calc(90px + 32px) 16px 60px; }
+  .rsvp-card { padding: 2rem 1.2rem;}
+  .rsvp-event-box { padding: 1rem; }
+  .splash-hint { bottom: 25px; }
 }
 </style>
 </head>
 <body>
 
 <div id="splash">
-  <video id="splash-video" muted playsinline preload="auto" poster="poster.jpg">
-    <source src="splash.mp4" type="video/mp4"/>
+  <video id="splash-video" autoplay muted playsinline preload="auto">
+    <source src="splash.mp4#t=0.001" type="video/mp4"/>
   </video>
- 
+  <div class="splash-content">
+    <div class="splash-divider"><span></span><i>✦</i><span></span></div>
+  </div>
+  <div class="splash-hint">Tap anywhere to begin</div>
+  <div class="splash-progress" id="splash-progress">
+    <div class="splash-progress-bar" id="splash-progress-bar"></div>
+  </div>
 </div>
 
 <div id="secondary-splash" class="hidden">
-  <video id="secondary-splash-video" muted playsinline preload="auto">
-    </video>
+  <video id="secondary-splash-video" autoplay muted playsinline preload="auto">
+  </video>
 </div>
 
 <div id="gate">
@@ -373,24 +350,8 @@ footer { text-align: center; padding: 44px 24px 64px; font-size: 9px; letter-spa
   <a href="#"><img src="logo.png" alt="T&D Logo" class="header-logo" onerror="this.style.display='none'"/></a>
   <nav class="header-nav">
     <a href="#our-story">OUR STORY</a>
-    <div class="nav-dropdown">
-      <a href="#travel-stay">TRAVEL & STAY</a>
-      <div class="dropdown-content">
-        <a href="#travel-uk" class="tier-uk">TRANSPORT – UK</a>
-        <a href="#travel-italy" class="tier-italy">TRANSPORT – ITALY</a>
-        <a href="#accom-uk" class="tier-uk">WHERE TO STAY – UK</a>
-        <a href="#accom-italy" class="tier-italy">WHERE TO STAY – ITALY</a>
-        <a href="#things-to-do">THINGS TO DO</a>
-      </div>
-    </div>
-    <div class="nav-dropdown">
-      <a href="#info">INFO</a>
-      <div class="dropdown-content">
-        <a href="#info">EVENTS</a>
-        <a href="#faq">REGISTRY</a>
-        <a href="#dress-code">DRESS CODE</a>
-      </div>
-    </div>
+    <a href="#events-hub">CELEBRATIONS</a>
+    <a href="#info">INFO</a>
     <a href="#faq">FAQ</a>
     <a class="header-rsvp-btn" href="#rsvp-page">RSVP</a>
   </nav>
@@ -401,16 +362,8 @@ footer { text-align: center; padding: 44px 24px 64px; font-size: 9px; letter-spa
 
 <div class="nav-drawer" id="nav-drawer">
   <a href="#our-story" onclick="closeDrawer()">OUR STORY</a>
-  <div class="drawer-section-title">TRAVEL & STAY</div>
-  <a href="#travel-uk" class="drawer-sublink tier-uk" onclick="closeDrawer()">Transport - UK</a>
-  <a href="#travel-italy" class="drawer-sublink tier-italy" onclick="closeDrawer()">Transport - Italy</a>
-  <a href="#accom-uk" class="drawer-sublink tier-uk" onclick="closeDrawer()">Where to Stay - UK</a>
-  <a href="#accom-italy" class="drawer-sublink tier-italy" onclick="closeDrawer()">Where to Stay - Italy</a>
-  <a href="#things-to-do" class="drawer-sublink" onclick="closeDrawer()">Things to Do</a>
-  <div class="drawer-section-title">INFO</div>
-  <a href="#info" class="drawer-sublink" onclick="closeDrawer()">Events</a>
-  <a href="#faq" class="drawer-sublink" onclick="closeDrawer()">Registry</a>
-  <a href="#dress-code" class="drawer-sublink" onclick="closeDrawer()">Dress Code</a>
+  <a href="#events-hub" onclick="closeDrawer()">CELEBRATIONS</a>
+  <a href="#info" onclick="closeDrawer()">INFO & DRESS CODE</a>
   <a href="#faq" onclick="closeDrawer()">FAQ</a>
   <a href="#rsvp-page" onclick="closeDrawer()">RSVP</a>
 </div>
@@ -423,11 +376,6 @@ footer { text-align: center; padding: 44px 24px 64px; font-size: 9px; letter-spa
 <div id="main">
 
   <section id="hero">
-    <div class="frame-tl"></div><div class="frame-tr"></div>
-    <div class="frame-bl"></div><div class="frame-br"></div>
-    
-    <p class="hero-eyebrow">Together with our families,</p>
-    
     <div class="hero-names-stacked">
       <div class="partner-name">Tracey</div>
       <div class="hero-amp">&</div>
@@ -436,7 +384,7 @@ footer { text-align: center; padding: 44px 24px 64px; font-size: 9px; letter-spa
     
     <p class="hero-invite-text">
       request the pleasure of your company<br>
-      <span id="dynamic-hero-location">at their wedding celebration</span>
+      <span id="dynamic-hero-location">at their wedding celebrations</span>
     </p>
 
     <div class="hero-dates-wrapper reveal reveal-d1">
@@ -457,7 +405,7 @@ footer { text-align: center; padding: 44px 24px 64px; font-size: 9px; letter-spa
     <div class="hero-welcome-block reveal reveal-d3">
       <p class="welcome-greeting">Dear <span class="guest-name-display">Family & Friends</span>,</p>
       <p>Welcome to our wedding website.</p>
-      <p>We’re getting married!!! We would be honoured to have you with us for our traditional ceremony and church wedding reception.</p>
+      <p>We’re getting married!!! We would be honoured to have you with us to celebrate.</p>
       <p>Our lives have been shaped by our family and friends, and this next chapter will be no different. It would mean a great pleasure to have you with us as we turn the next page.</p>
       <p>We hope you can celebrate this special occasion with us. Please let us know by RSVPing.</p>
       <p class="welcome-signoff">
@@ -469,7 +417,7 @@ footer { text-align: center; padding: 44px 24px 64px; font-size: 9px; letter-spa
   </section>
 
   <section id="our-story">
-    <div class="story-container">
+    <div class="section-wrapper story-container">
       <div class="section-label reveal">The Beginning</div>
       <h2 class="section-title reveal reveal-d1">Our Love Story</h2>
       <div class="section-rule reveal reveal-d2"></div>
@@ -492,16 +440,15 @@ footer { text-align: center; padding: 44px 24px 64px; font-size: 9px; letter-spa
     </div>
   </section>
 
-  <section id="travel-stay">
-    <div class="section-wrapper">
-      <p class="section-label reveal">Planning Your Journey</p>
-      <h2 class="section-title reveal reveal-d1">Travel & Stay</h2>
-      <div class="section-rule reveal reveal-d2"></div>
-      <p class="section-sub reveal reveal-d3">Details for our celebrations</p>
+  <section id="events-hub" class="section-wrapper">
+    
+    <div class="tier-uk" style="margin-bottom: 80px;">
+      <h2 class="event-hub-title reveal">The UK Celebration</h2>
+      <p class="event-hub-date reveal">London • 20 March 2027</p>
 
-      <div id="travel-uk" class="travel-destination tier-uk">
+      <div class="travel-destination">
         <div class="travel-dest-header reveal">
-          <h3><span>UK: TRADITIONAL WEDDING (20th March 2027)</span></h3>
+          <h3><span>TRADITIONAL WEDDING</span></h3>
           <hr/>
         </div>
         <div class="travel-grid reveal">
@@ -521,19 +468,38 @@ footer { text-align: center; padding: 44px 24px 64px; font-size: 9px; letter-spa
         </div>
       </div>
 
-      <div id="accom-uk" class="travel-destination tier-uk">
+      <div class="travel-destination">
         <div class="travel-dest-header reveal">
-          <h3><span>WHERE TO STAY // UK</span></h3>
+          <h3><span>WHERE TO STAY</span></h3>
           <hr/>
         </div>
         <div class="reveal">
-          <img src="uk_hotel.png" alt="UK Hotel Recommendations" style="width:100%; max-width:1100px; height:auto; display:block; margin:0 auto; border-radius:4px; box-shadow: 0 4px 15px rgba(0,0,0,0.05);" onerror="this.style.display='none'" />
+          <img src="uk_hotel.png" alt="UK Hotel Recommendations" class="full-width-image" onerror="this.style.display='none'" />
         </div>
       </div>
 
-      <div id="travel-italy" class="travel-destination tier-italy">
+      <div class="travel-destination">
         <div class="travel-dest-header reveal">
-          <h3><span>ITALY: LAGO DI GARDA WEEKEND (25th - 27th June 2027)</span></h3>
+          <h3><span>THINGS TO DO</span></h3>
+          <hr/>
+        </div>
+        <div class="travel-grid reveal">
+          <div class="travel-card">
+            <p class="travel-card-label">Explore London</p>
+            <p class="travel-card-title">Sightseeing</p>
+            <p>London offers endless possibilities. From historic sites to world-class museums, there's something for everyone. Let us know if you need insider tips!</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tier-italy" style="margin-bottom: 80px;">
+      <h2 class="event-hub-title reveal">The Italy Celebration</h2>
+      <p class="event-hub-date reveal">Lago di Garda • 25-27 June 2027</p>
+
+      <div class="travel-destination">
+        <div class="travel-dest-header reveal">
+          <h3><span>WEDDING WEEKEND ITINERARY</span></h3>
           <hr/>
         </div>
         <div class="travel-grid reveal">
@@ -558,9 +524,9 @@ footer { text-align: center; padding: 44px 24px 64px; font-size: 9px; letter-spa
         </div>
       </div>
 
-      <div class="travel-destination tier-italy">
+      <div class="travel-destination">
         <div class="travel-dest-header reveal">
-          <h3><span>GETTING THERE // ITALY</span></h3>
+          <h3><span>GETTING THERE</span></h3>
           <hr/>
         </div>
         <div class="travel-grid reveal">
@@ -574,37 +540,31 @@ footer { text-align: center; padding: 44px 24px 64px; font-size: 9px; letter-spa
         </div>
       </div>
 
-      <div id="accom-italy" class="travel-destination tier-italy">
+      <div class="travel-destination">
         <div class="travel-dest-header reveal">
-          <h3><span>WHERE TO STAY // ITALY</span></h3>
+          <h3><span>WHERE TO STAY</span></h3>
           <hr/>
         </div>
         <div class="reveal">
-          <img src="italy_hotel.png" alt="Italy Hotel Recommendations" style="width:100%; max-width:1100px; height:auto; display:block; margin:0 auto; border-radius:4px; box-shadow: 0 4px 15px rgba(0,0,0,0.05);" onerror="this.style.display='none'" />
+          <img src="italy_hotel.png" alt="Italy Hotel Recommendations" class="full-width-image" onerror="this.style.display='none'" />
         </div>
       </div>
 
-      <div id="things-to-do" class="travel-destination">
+      <div class="travel-destination">
         <div class="travel-dest-header reveal">
           <h3><span>THINGS TO DO</span></h3>
           <hr/>
         </div>
         <div class="travel-grid reveal">
-          <div class="travel-card tier-uk">
-            <p class="travel-card-label">Explore London</p>
-            <p class="travel-card-title">UK Guests</p>
-            <p>London offers endless possibilities. From historic sites to world-class museums, there's something for everyone. Let us know if you need insider tips!</p>
-          </div>
-          <div class="travel-card tier-italy">
+          <div class="travel-card">
             <p class="travel-card-label">Explore Lake Garda</p>
-            <p class="travel-card-title">Italy Guests</p>
+            <p class="travel-card-title">Sightseeing</p>
             <p>Take a boat across the lake to Limone sul Garda, Malcesine, and Riva del Garda.</p>
             <p>Wander through Gargnano and Salò for gelato, cafés, and beautiful views.</p>
             <p>Enjoy a mountain adventure by cable car at Monte Baldo.</p>
           </div>
         </div>
       </div>
-
     </div>
   </section>
 
@@ -625,7 +585,7 @@ footer { text-align: center; padding: 44px 24px 64px; font-size: 9px; letter-spa
         </div>
       </div>
 
-      <div id="dress-code" class="travel-destination">
+      <div class="travel-destination">
         <div class="travel-dest-header reveal">
           <h3><span>DRESS CODE GUIDELINES</span></h3>
           <hr/>
@@ -669,7 +629,6 @@ footer { text-align: center; padding: 44px 24px 64px; font-size: 9px; letter-spa
       <div class="section-rule reveal reveal-d2"></div>
       
       <div class="faq-layout reveal">
-        
         <div class="faq-col">
           <p class="faq-col-title">Before The Day</p>
           <div class="faq-item tier-uk">
@@ -725,7 +684,6 @@ footer { text-align: center; padding: 44px 24px 64px; font-size: 9px; letter-spa
             <div class="faq-answer">Please feel free to contact us at traceydavidcelebration@gmail.com with any questions.</div>
           </div>
         </div>
-
       </div>
     </div>
   </section>
@@ -734,7 +692,7 @@ footer { text-align: center; padding: 44px 24px 64px; font-size: 9px; letter-spa
     <div class="rsvp-inner">
       <div class="rsvp-header reveal">
         <h2>Kindly Reply</h2>
-        <p id="rsvp-intro-text">We would love for you to join us as we celebrate our wedding ceremony. It would mean a great deal to have you there. Please let us know if you’re able to attend.</p>
+        <p id="rsvp-intro-text">We would love for you to join us. Please let us know which events you are able to attend.</p>
       </div>
 
       <div class="rsvp-card reveal">
@@ -758,51 +716,54 @@ footer { text-align: center; padding: 44px 24px 64px; font-size: 9px; letter-spa
           
           <div class="form-group full">
             <label for="rsvp-address">Full Address (including country) <span class="req">*</span></label>
-            <textarea id="rsvp-address" name="address" rows="3" placeholder="Street address, City, Postcode/ZIP, Country" required></textarea>
+            <textarea id="rsvp-address" name="address" rows="2" required></textarea>
           </div>
 
-          <div class="form-divider"></div>
-
-          <div class="form-group full">
-            <label>Will you be attending? <span class="req">*</span></label>
-            <div class="radio-group">
-              <label class="radio-label"><input type="radio" name="attending" value="yes" required/> Yes, I'll be there!</label>
-              <label class="radio-label"><input type="radio" name="attending" value="no"/> Sending love from afar.</label>
+          <div class="tier-uk rsvp-event-box">
+            <h3 class="rsvp-event-header">UK Wedding • 20.03.2027</h3>
+            <div class="form-group full">
+              <label>Will you be attending the UK Wedding? <span class="req">*</span></label>
+              <div class="radio-group">
+                <label class="radio-label"><input type="radio" name="attendingUK" value="yes"/> Yes, I'll be there!</label>
+                <label class="radio-label"><input type="radio" name="attendingUK" value="no"/> Regretfully, no.</label>
+              </div>
+            </div>
+            <div class="form-group full" style="margin-top: 15px;">
+              <label>Do you require Aso Ebi fabric or Gele Head Wrap/Hat?</label>
+              <div class="radio-group">
+                <label class="radio-label"><input type="radio" name="asoEbi" value="yes"/> Yes</label>
+                <label class="radio-label"><input type="radio" name="asoEbi" value="no"/> No</label>
+              </div>
             </div>
           </div>
-          
+
+          <div class="tier-italy rsvp-event-box">
+            <h3 class="rsvp-event-header">Italy Celebration • 25-27.06.2027</h3>
+            <div class="form-group full">
+              <label>Will you be attending the Italy Wedding Weekend? <span class="req">*</span></label>
+              <div class="radio-group">
+                <label class="radio-label"><input type="radio" name="attendingItaly" value="yes"/> Yes, I'll be there!</label>
+                <label class="radio-label"><input type="radio" name="attendingItaly" value="no"/> Regretfully, no.</label>
+              </div>
+            </div>
+            <div class="form-group full" style="margin-top:15px;">
+              <label class="radio-label" style="font-weight:500;">
+                <input type="checkbox" name="transportNeeded" value="yes"/> I need transport details for Italy
+              </label>
+            </div>
+          </div>
+
           <div class="form-group full">
-            <label>Will you be bringing a guest? <span class="req">*</span></label>
+            <label>Will you be bringing a plus one? (If applicable)</label>
             <div class="radio-group">
-              <label class="radio-label"><input type="radio" name="plusOne" value="yes" required/> Yes (Adult/Child)</label>
+              <label class="radio-label"><input type="radio" name="plusOne" value="yes"/> Yes</label>
               <label class="radio-label"><input type="radio" name="plusOne" value="no"/> No</label>
             </div>
           </div>
-          
-          <div class="form-group full tier-uk">
-            <label>Will you be requiring Aso Ebi fabric or Gele Head Wrap or Hat? <span class="req">*</span></label>
-            <div class="radio-group">
-              <label class="radio-label"><input type="radio" name="asoEbi" value="yes" required/> Yes</label>
-              <label class="radio-label"><input type="radio" name="asoEbi" value="no"/> No</label>
-            </div>
-          </div>
-          
-          <div class="form-group full tier-italy" style="margin-top:1rem;">
-            <label class="radio-label" style="font-weight:500; color:#fff;">
-              <input type="checkbox" name="transportNeeded" value="yes"/> I need transport to the venue
-            </label>
-          </div>
-          
-          <div class="form-divider"></div>
 
           <div class="form-group full">
-            <label for="rsvp-hotel">Hotel / Accommodation / Area</label>
-            <input type="text" id="rsvp-hotel" name="hotel" placeholder="e.g. Hilton London Paddington"/>
-          </div>
-          
-          <div class="form-group full">
-            <label for="rsvp-song">Song you'd love to hear</label>
-            <input type="text" id="rsvp-song" name="song" placeholder="e.g. Viva la Vida - Coldplay"/>
+            <label for="rsvp-hotel">Where will you be staying? (Hotel / Area)</label>
+            <input type="text" id="rsvp-hotel" name="hotel"/>
           </div>
           
           <div class="form-group full">
@@ -811,11 +772,16 @@ footer { text-align: center; padding: 44px 24px 64px; font-size: 9px; letter-spa
           </div>
 
           <div class="form-group full">
-            <label for="rsvp-msg">Comments / Message</label>
-            <textarea id="rsvp-msg" name="message" rows="3"></textarea>
+            <label for="rsvp-song">Song you'd love to hear on the dancefloor</label>
+            <input type="text" id="rsvp-song" name="song"/>
+          </div>
+
+          <div class="form-group full">
+            <label for="rsvp-msg">Message for the couple</label>
+            <textarea id="rsvp-msg" name="message" rows="2"></textarea>
           </div>
           
-          <button type="submit" class="btn-submit" id="rsvp-submit">Submit</button>
+          <button type="submit" class="btn-submit" id="rsvp-submit">Submit RSVP</button>
         </form>
         
         <div id="rsvp-success">
@@ -834,13 +800,14 @@ footer { text-align: center; padding: 44px 24px 64px; font-size: 9px; letter-spa
     <div class="footer-credit">
       Designed & developed with ♥ by
       <a href="https://www.fiverr.com/auf_production" target="_blank" rel="noopener">AUF Production</a>
-       ·  Digital Wedding Invitations
+       ·  Digital Wedding Invitations
     </div>
   </footer>
 
-</div><script>
+</div>
+
+<script>
 /* ── GUEST LIST ─────────────────────── */
-// Defines the guest permission type ("both", "uk", or "italy")
 const guests = {
   "tracey s": "both",
   "alice simpson": "uk",
@@ -862,12 +829,16 @@ const bgAudio=document.getElementById("bg-audio");
 const audioBtn=document.getElementById("audio-btn");
 const audioLbl=document.getElementById("audio-lbl");
 
-/* Secondary Splash elements */
 const secSplash = document.getElementById("secondary-splash");
 const secVideo = document.getElementById("secondary-splash-video");
 
-/* ── MAIN SPLASH (Envelope) ─────────── */
-const SPLASH_DUR=3000;
+/* ── AUTOPLAY FALLBACK ──────────────── */
+document.addEventListener("DOMContentLoaded", () => {
+    splashVideo.play().catch(e => console.log("Waiting for user interaction"));
+});
+
+/* ── MAIN SPLASH (5 seconds) ─────────── */
+const SPLASH_DUR = 5000;
 let videoPlaying=false,videoDismissed=false,splashTimer=null;
 document.body.classList.add("splash-active");
 
@@ -896,7 +867,7 @@ splashVideo.addEventListener("ended",dismissSplash);
 splashVideo.addEventListener("error",()=>setTimeout(dismissSplash,400));
 splash.addEventListener("click",startSplashVideo);
 splash.addEventListener("touchend",function(e){e.preventDefault();startSplashVideo()},{passive:false});
-setTimeout(()=>{if(!videoDismissed&&!videoPlaying)dismissSplash()},7000);
+setTimeout(()=>{if(!videoDismissed&&!videoPlaying)dismissSplash()},8000);
 
 /* ── MOBILE NAV TOGGLE ──────────────── */
 const navToggle=document.getElementById("nav-toggle");
@@ -913,53 +884,48 @@ function openInvitation(){
   if(!tier){gateError.textContent="We couldn't find your name on the guest list. Please check the spelling.";guestInput.style.borderColor="var(--gold)";return}
   gateError.textContent="";
   
-  // Set the guest name dynamically in the welcome message
   const nameParts = raw.split(" ").map(w=>w[0].toUpperCase()+w.slice(1));
   const displayName = nameParts[0]; 
   const guestDisplay = document.querySelector(".guest-name-display");
   if(guestDisplay) guestDisplay.textContent = displayName;
 
-  // Set the CSS segregation rules based on the guest tier
   document.body.setAttribute('data-guest-tier', tier);
 
-  // Dynamically update text based on where they are invited
   const heroLocText = document.getElementById("dynamic-hero-location");
   const rsvpText = document.getElementById("rsvp-intro-text");
   
   if (tier === "uk") {
     heroLocText.innerHTML = "at their traditional wedding ceremony in London";
-    rsvpText.innerHTML = "We would love for you to join us in <strong>London</strong> as we celebrate our traditional wedding ceremony. It would mean a great deal to have you there. Please let us know if you’re able to attend.";
+    rsvpText.innerHTML = "We would love for you to join us in <strong>London</strong> as we celebrate our traditional wedding ceremony. It would mean a great deal to have you there.";
     secVideo.src = "uk.mp4";
   } else if (tier === "italy") {
     heroLocText.innerHTML = "at their Italian wedding celebration";
-    rsvpText.innerHTML = "We would love for you to join us in <strong>Lago di Garda</strong> for our wedding weekend. It would mean a great deal to have you there. Please let us know if you’re able to attend.";
+    rsvpText.innerHTML = "We would love for you to join us in <strong>Lago di Garda</strong> for our wedding weekend. It would mean a great deal to have you there.";
     secVideo.src = "italy.mp4";
   } else {
     heroLocText.innerHTML = "at their wedding celebrations";
-    rsvpText.innerHTML = "We would love for you to join us in <strong>London and Lago di Garda</strong> as we celebrate our wedding. It would mean a great deal to have you there. Please let us know which events you are able to attend.";
+    rsvpText.innerHTML = "We would love for you to join us in <strong>London and Lago di Garda</strong> as we celebrate our wedding. It would mean a great deal to have you there.";
     secVideo.src = "italy.mp4"; 
   }
 
   gate.classList.add("hide");
 
-  // Show the secondary splash, play for 1.5 seconds, then show the site
   secSplash.classList.remove("hidden");
   secSplash.classList.add("visible");
   
-  secVideo.play().catch(() => {}); // Play the video, catch autoplay block rules
+  secVideo.play().catch(() => {}); 
 
+  // Secondary splash duration set to 4.5s
   setTimeout(() => {
-    // Hide the secondary splash screen after 1.5 seconds
     secSplash.classList.remove("visible");
     secSplash.classList.add("hidden");
     secVideo.pause();
 
-    // Reveal main website
     mainEl.classList.add("visible");
     setTimeout(()=>{mainEl.classList.add("show");initScrollReveal();siteHeader.classList.add("show")}, 80);
     setTimeout(()=>gate.classList.add("gone"), 960);
     tryPlayMusic();
-  }, 1500);
+  }, 4500);
 }
 
 openBtn.addEventListener("click",openInvitation);
@@ -986,7 +952,7 @@ function throwConfetti() {
     let conf = document.createElement('div');
     conf.className = 'confetti';
     conf.style.left = Math.random() * 100 + 'vw';
-    conf.style.backgroundColor = Math.random() > 0.5 ? '#B59C7A' : '#ffffff'; // Gold or White
+    conf.style.backgroundColor = Math.random() > 0.5 ? '#B59C7A' : '#ffffff'; 
     conf.style.animationDuration = (Math.random() * 3 + 2) + 's';
     document.body.appendChild(conf);
     setTimeout(() => conf.remove(), 5000);
