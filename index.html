@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Tracey & David — Wedding Invitation</title>
 <link rel="icon" type="image/png" href="logo.png"/>
 <link rel="apple-touch-icon" href="logo.png"/>
@@ -59,7 +59,7 @@ body[data-guest-tier="italy"] .tier-uk { display: none !important; }
 /* ═══════════════════════════════════════════════════
    FULLSCREEN SPLASH SCREENS
 ═══════════════════════════════════════════════════ */
-#splash, #secondary-splash { position: fixed; top: 0; left: 0; right: 0; bottom: 0; width: 100%; height: 100%; z-index: 9999; background-color: var(--bg-cream); display: flex; flex-direction: column; align-items: center; justify-content: flex-end; padding-bottom: 50px; overflow: hidden; transition: opacity 1s ease, visibility 1s ease; }
+#splash, #secondary-splash { position: fixed; top: 0; left: 0; right: 0; bottom: 0; width: 100%; height: 100vh; min-height: 100dvh; z-index: 9999; background-color: var(--bg-cream); display: flex; flex-direction: column; align-items: center; justify-content: flex-end; padding-bottom: 50px; overflow: hidden; transition: opacity 1s ease, visibility 1s ease; }
 #secondary-splash { z-index: 9000; justify-content: center; }
 
 #splash.hidden, #secondary-splash.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
@@ -234,6 +234,17 @@ section { position: relative; z-index: 1; width: 100%; }
 .map-container { width: 100%; max-width: 500px; margin: 20px auto; mix-blend-mode: multiply; }
 .map-container img { width: 100%; height: auto; display: block; border-radius: 4px; }
 .full-width-image { width: 100%; height: auto; display: block; border-radius: 4px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+.hotel-gallery { margin-top: 18px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; }
+.hotel-card { background: #fff; border: 1px solid var(--card-border); border-radius: 6px; overflow: hidden; box-shadow: 0 7px 20px rgba(0,0,0,0.06); }
+.hotel-card-link { display: block; text-decoration: none; color: inherit; }
+.hotel-card-image { width: 100%; aspect-ratio: 16/10; object-fit: cover; display: block; background: linear-gradient(135deg, rgba(181,156,122,.3), rgba(239,238,233,.75)); }
+.hotel-card-body { padding: 0.95rem 0.9rem 1rem; text-align: center; }
+.hotel-card-index { font-size: .62rem; letter-spacing: .22em; text-transform: uppercase; color: var(--gold); margin-bottom: 7px; }
+.hotel-card-name { font-family: 'Bodoni Moda', serif; font-size: .95rem; color: var(--burgundy); line-height: 1.35; margin-bottom: 8px; text-transform: uppercase; }
+.hotel-card-meta { font-size: .8rem; color: var(--ink-light); line-height: 1.5; }
+.hotel-card-contact { margin-top: 8px; font-size: .76rem; color: var(--ink-mid); line-height: 1.5; word-break: break-word; }
+.hotel-card-contact a { color: var(--ink-mid); text-decoration: none; border-bottom: 1px dashed rgba(77,33,33,.25); }
+.hotel-card-contact a:hover { color: var(--gold); border-bottom-color: var(--gold); }
 
 /* ═══════════════════════════════════════════════════
    INFO & DRESS CODE
@@ -334,6 +345,7 @@ footer { text-align: center; padding: 40px 20px 60px; font-size: 9px; letter-spa
 
 @media(max-width: 900px) {
   .faq-layout { grid-template-columns: 1fr; }
+  .hotel-gallery { grid-template-columns: 1fr; }
 }
 
 @media(max-width: 600px) {
@@ -341,8 +353,8 @@ footer { text-align: center; padding: 40px 20px 60px; font-size: 9px; letter-spa
   .hero-top-content { padding: 36px 14px 24px; }
   .hero-dates-wrapper { flex-direction: column; gap: 1rem;}
   
-  /* MOBILE SPLASH FIX: Show full video frame without cropping */
-  #splash video, #secondary-splash video { object-fit: contain; }
+  #splash, #secondary-splash { height: 100dvh; min-height: 100dvh; }
+  #splash video, #secondary-splash video { object-fit: cover; object-position: center; }
   
   .travel-grid { grid-template-columns: 1fr; gap: 1.2rem;}
   .travel-card { padding: 1.5rem; }
@@ -535,7 +547,50 @@ footer { text-align: center; padding: 40px 20px 60px; font-size: 9px; letter-spa
           <hr/>
         </div>
         <div class="reveal">
-          <img src="uk_hotel.png" alt="UK Hotel Recommendations" class="full-width-image" onerror="this.style.display='none'" />
+          <div class="hotel-gallery">
+            <article class="hotel-card">
+              <a class="hotel-card-link" href="https://maps.google.com/?q=Royal+Lancaster+London+Lancaster+Terrace" target="_blank" rel="noopener">
+                <img src="royal.png" alt="Royal Lancaster London" class="hotel-card-image" onerror="this.style.display='none'"/>
+              </a>
+              <div class="hotel-card-body">
+                <div class="hotel-card-index">01</div>
+                <div class="hotel-card-name">ROYAL LANCASTER LONDON</div>
+                <div class="hotel-card-meta">Lancaster Terrace<br/>5 minutes on foot</div>
+                <div class="hotel-card-contact">
+                <a href="tel:+442075516000">+44 20 7551 6000</a><br/>
+                <a href="mailto:info@royallancaster.com">info@royallancaster.com</a>
+                </div>
+              </div>
+            </article>
+            <article class="hotel-card">
+              <a class="hotel-card-link" href="https://maps.google.com/?q=Hilton+London+Paddington+146+Praed+St" target="_blank" rel="noopener">
+                <img src="hilton.png" alt="Hilton London Paddington" class="hotel-card-image" onerror="this.style.display='none'"/>
+              </a>
+              <div class="hotel-card-body">
+                <div class="hotel-card-index">02</div>
+                <div class="hotel-card-name">HILTON LONDON PADDINGTON</div>
+                <div class="hotel-card-meta">146 Praed St<br/>5 minutes on foot</div>
+                <div class="hotel-card-contact">
+                <a href="tel:+442078500500">+44 20 7850 0500</a><br/>
+                <a href="mailto:reservations.lonpd@hilton.com">reservations.lonpd@hilton.com</a>
+                </div>
+              </div>
+            </article>
+            <article class="hotel-card">
+              <a class="hotel-card-link" href="https://maps.google.com/?q=Premier+Inn+Paddington+Basin+Paddington+Exchange+N+Wharf+Rd" target="_blank" rel="noopener">
+                <img src="basin.png" alt="Premier Inn Paddington Basin" class="hotel-card-image" onerror="this.style.display='none'"/>
+              </a>
+              <div class="hotel-card-body">
+                <div class="hotel-card-index">03</div>
+                <div class="hotel-card-name">PREMIER INN PADDINGTON BASIN</div>
+                <div class="hotel-card-meta">Paddington Exchange, N Wharf Rd<br/>10 minutes on foot</div>
+                <div class="hotel-card-contact">
+                <a href="tel:+443337777291">+44 333 777 7291</a><br/>
+                <a href="mailto:contactus@premierinn.com">contactus@premierinn.com</a>
+                </div>
+              </div>
+            </article>
+          </div>
         </div>
       </div>
 
@@ -607,7 +662,50 @@ footer { text-align: center; padding: 40px 20px 60px; font-size: 9px; letter-spa
           <hr/>
         </div>
         <div class="reveal">
-          <img src="italy_hotel.png" alt="Italy Hotel Recommendations" class="full-width-image" onerror="this.style.display='none'" />
+          <div class="hotel-gallery">
+            <article class="hotel-card">
+              <a class="hotel-card-link" href="https://maps.google.com/?q=Lefay+Resort+%26+Spa+Lago+di+Garda+Via+Angelo+Feltrinelli+136" target="_blank" rel="noopener">
+                <img src="lefay.png" alt="Lefay Resort and Spa Lago di Garda" class="hotel-card-image" onerror="this.style.display='none'"/>
+              </a>
+              <div class="hotel-card-body">
+                <div class="hotel-card-index">01</div>
+                <div class="hotel-card-name">LEFAY RESORT &amp; SPA LAGO DI GARDA</div>
+                <div class="hotel-card-meta">Via Angelo Feltrinelli, 136<br/>8 minutes by car</div>
+                <div class="hotel-card-contact">
+                <a href="tel:+390365241800">+39 0365 241800</a><br/>
+                <a href="mailto:booking@lefayresorts.com">booking@lefayresorts.com</a>
+                </div>
+              </div>
+            </article>
+            <article class="hotel-card">
+              <a class="hotel-card-link" href="https://maps.google.com/?q=Grand+Hotel+Fasano+Via+Zanardelli+190" target="_blank" rel="noopener">
+                <img src="grand.png" alt="Grand Hotel Fasano" class="hotel-card-image" onerror="this.style.display='none'"/>
+              </a>
+              <div class="hotel-card-body">
+                <div class="hotel-card-index">02</div>
+                <div class="hotel-card-name">GRAND HOTEL FASANO</div>
+                <div class="hotel-card-meta">Via Zanardelli, 190<br/>6 minutes by car</div>
+                <div class="hotel-card-contact">
+                <a href="tel:+390365290220">+39 0365 290220</a><br/>
+                <a href="mailto:info@ghf.it">info@ghf.it</a>
+                </div>
+              </div>
+            </article>
+            <article class="hotel-card">
+              <a class="hotel-card-link" href="https://maps.google.com/?q=Hotel+Gardenia+al+Lago+Via+Colletta+53" target="_blank" rel="noopener">
+                <img src="lago.png" alt="Hotel Gardenia al Lago" class="hotel-card-image" onerror="this.style.display='none'"/>
+              </a>
+              <div class="hotel-card-body">
+                <div class="hotel-card-index">03</div>
+                <div class="hotel-card-name">HOTEL GARDENIA AL LAGO</div>
+                <div class="hotel-card-meta">Via Colletta, 53<br/>3 minutes by car</div>
+                <div class="hotel-card-contact">
+                <a href="tel:+39036571195">+39 0365 71195</a><br/>
+                <a href="mailto:info@gardenialalago.com">info@gardenialalago.com</a>
+                </div>
+              </div>
+            </article>
+          </div>
         </div>
       </div>
 
@@ -963,7 +1061,7 @@ function openInvitation(){
   } else if (tier === "italy") {
     heroLocText.innerHTML = "at their Italian wedding celebration";
     rsvpText.innerHTML = "We would love for you to join us in <strong>Lago di Garda</strong> for our wedding weekend. It would mean a great deal to have you there.";
-    heroTierVideo.src = "italy.mp4";
+    heroTierVideo.src = "Italy.mp4";
   } else {
     heroLocText.innerHTML = "at their wedding celebrations";
     rsvpText.innerHTML = "We would love for you to join us in <strong>London and Lago di Garda</strong> as we celebrate our wedding. It would mean a great deal to have you there.";
