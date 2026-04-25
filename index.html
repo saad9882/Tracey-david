@@ -1,0 +1,1215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Tracey & David — Wedding Invitation</title>
+<link rel="icon" type="image/png" href="logo.png"/>
+<link rel="apple-touch-icon" href="logo.png"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Raleway:wght@200;300;400;500&display=swap" rel="stylesheet"/>
+
+<style>
+/* ═══════════════════════════════════════════════════
+   TOKENS & BASE
+═══════════════════════════════════════════════════ */
+:root {
+  --header-bg: #EFEEE9;
+  --bg-cream: #EFEEE9;
+  --beige: #E6E2D8;
+  --beige-dark: #DED9CC;
+  --cream: #FAF8F5;
+  --gold: #B59C7A;
+  --gold-light: #C4AD8D;
+  --burgundy: rgb(77, 33, 33);
+  --merlot: #4C0000; 
+  --green: #1A3322;
+  --ink: #111111;
+  --ink-mid: #333333;
+  --ink-light: #555555;
+  --card-border: rgba(0, 0, 0, 0.08);
+  --hh: 90px; 
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; width: 100%; overflow-x: hidden; }
+
+/* FONT FIX: Forces laptops/Windows to render fonts as elegantly as iPhones */
+body { 
+  background: var(--bg-cream); 
+  color: var(--ink); 
+  font-family: 'Raleway', sans-serif; 
+  font-weight: 300; 
+  overflow-x: hidden; 
+  width: 100%; 
+  position: relative; 
+  -webkit-font-smoothing: antialiased; 
+  -moz-osx-font-smoothing: grayscale; 
+  text-rendering: optimizeLegibility; 
+}
+body.splash-active { overflow: hidden; }
+
+/* ═══════════════════════════════════════════════════
+   GUEST SEGREGATION LOGIC
+═══════════════════════════════════════════════════ */
+body[data-guest-tier="uk"] .tier-italy { display: none !important; }
+body[data-guest-tier="italy"] .tier-uk { display: none !important; }
+
+/* ═══════════════════════════════════════════════════
+   FULLSCREEN SPLASH SCREENS
+═══════════════════════════════════════════════════ */
+#splash, #secondary-splash { position: fixed; top: 0; left: 0; right: 0; bottom: 0; width: 100%; height: 100vh; min-height: 100dvh; z-index: 9999; background-color: var(--bg-cream); display: flex; flex-direction: column; align-items: center; justify-content: flex-end; padding-bottom: 50px; overflow: hidden; transition: opacity 1s ease, visibility 1s ease; }
+#secondary-splash { z-index: 9000; justify-content: center; }
+
+#splash.hidden, #secondary-splash.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+#secondary-splash.visible { opacity: 1; visibility: visible; pointer-events: auto; }
+
+#splash video, #secondary-splash video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center; pointer-events: none; z-index: 0; }
+
+#splash::before { content: ''; position: absolute; inset: 0; z-index: 1; pointer-events: none; background: linear-gradient(170deg, rgba(0,0,0,.15) 0%, rgba(26,51,34,.05) 50%, rgba(0,0,0,.2) 100%); }
+#splash::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 60%; z-index: 1; pointer-events: none; background: linear-gradient(to top, rgba(0,0,0,.5) 0%, rgba(0,0,0,.1) 65%, transparent 100%); }
+.splash-content { position: relative; z-index: 2; text-align: center; width: 100%; pointer-events: none; }
+.splash-divider { display: flex; align-items: center; gap: 16px; justify-content: center; margin: 24px auto 0; opacity: 0; animation: fadeIn 1.4s .9s ease forwards; }
+.splash-divider span { width: 40px; height: 1px; background: var(--gold); opacity: .55; display: block; }
+.splash-divider i { color: var(--gold); font-size: 8px; letter-spacing: .2em; font-style: normal;}
+.splash-progress { position: absolute; bottom: 0; left: 0; right: 0; z-index: 3; height: 4px; background: rgba(212,175,55,.25); display: none; }
+.splash-progress-bar { height: 100%; background: linear-gradient(90deg, var(--gold), var(--gold-light)); width: 0%; transition: width 5s linear; } 
+.splash-progress.running { display: block; }
+.splash-progress.running .splash-progress-bar { width: 100%; }
+.splash-hint { position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%); z-index: 2; color: rgba(255,255,255,.9); font-size: 9px; letter-spacing: .45em; text-transform: uppercase; opacity: 0; animation: fadeIn 1s 1.6s ease forwards, hintPulse 2.6s 2.8s ease-in-out infinite; cursor: pointer; }
+
+@keyframes hintPulse { 0%, 100% { opacity: .5 } 50% { opacity: 1 } }
+@keyframes fadeIn { to { opacity: 1; } }
+@keyframes fadeUp { from { opacity: 0; transform: translateY(26px); } to { opacity: 1; transform: translateY(0); } }
+
+/* ═══════════════════════════════════════════════════
+   GUEST GATE
+═══════════════════════════════════════════════════ */
+#gate { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 8000; background: var(--bg-cream); display: none; flex-direction: column; align-items: center; justify-content: center; padding: 2rem; transition: opacity .9s ease; overflow: hidden; }
+#gate-bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: 0; opacity: 0.6; pointer-events: none; image-rendering: high-quality; }
+#gate.visible { display: flex; }
+#gate.hide { opacity: 0; pointer-events: none; }
+#gate.gone { display: none !important; }
+#gate > * { position: relative; z-index: 1; }
+.gate-logo { max-width: 120px; height: auto; margin-bottom: 1.5rem; opacity: 0; animation: fadeUp 1s .1s forwards; }
+.gate-pretitle { font-family: 'Literaturnaya', 'Bodoni Moda', serif; font-size: 0.75rem; letter-spacing: 0.25em; text-transform: uppercase; color: var(--burgundy); margin-bottom: 0.5rem; opacity: 0; animation: fadeUp 1s .2s forwards; text-align: center;}
+.gate-divider { display: flex; align-items: center; gap: 1rem; width: 180px; margin-bottom: 1.5rem; opacity: 0; animation: fadeUp 1s .3s forwards; }
+.gate-divider hr { flex: 1; border: none; border-top: 1px solid rgba(77, 33, 33, 0.2); }
+.gate-divider i { color: rgba(77, 33, 33, 0.3); font-size: 12px; }
+.gate-names-stacked { display: flex; flex-direction: column; align-items: center; gap: 1rem; margin-bottom: 1.5rem; opacity: 0; animation: fadeUp 1s .4s forwards; width: 100%; }
+.name-block { display: flex; flex-direction: column; align-items: center; line-height: 0.8; }
+.name-first { font-family: 'Bodoni Moda', serif; font-size: clamp(2rem, 6vw, 3rem); text-transform: uppercase; letter-spacing: 0.1em; color: var(--burgundy); z-index: 1; }
+.name-last { font-family: 'Diploma Script Pro', 'Sloop Script Pro', cursive; font-size: clamp(2.5rem, 8vw, 3.5rem); color: var(--burgundy); margin-top: -15px; z-index: 2; }
+.gate-amp { font-family: 'Bodoni Moda', serif; font-size: 1.5rem; color: var(--burgundy); }
+.gate-form { display: flex; flex-direction: column; align-items: center; width: min(360px, 100%); opacity: 0; animation: fadeUp 1s .7s forwards; }
+.gate-form label { font-family: 'Literaturnaya', serif; font-size: 0.75rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--burgundy); margin-bottom: 0.5rem; text-align: center; }
+.gate-form input[type="text"] { width: 100%; padding: 0.5rem 0; background: transparent; border: none; border-bottom: 1px solid var(--burgundy); border-radius: 0; font-family: 'Literaturnaya', serif; font-size: 16px; color: var(--burgundy); text-align: center; outline: none; margin-bottom: 1.5rem; transition: border-bottom-width .3s; }
+.gate-form input:focus { border-bottom: 2px solid var(--burgundy); }
+.btn-open { width: 100%; padding: 1.2rem; background: var(--burgundy); color: #fff; border: none; border-radius: 4px; font-family: 'Literaturnaya', serif; font-size: 0.8rem; letter-spacing: 0.2em; text-transform: uppercase; cursor: pointer; transition: background 0.3s; }
+.btn-open:hover { background: #3a1818; }
+
+/* ═══════════════════════════════════════════════════
+   HEADER
+═══════════════════════════════════════════════════ */
+#site-header { position: fixed; top: 0; left: 0; width: 100%; z-index: 500; height: 90px; background: var(--header-bg); display: flex; align-items: center; padding: 0 clamp(16px, 5vw, 60px); gap: 1.2rem; transform: translateY(-100%); transition: transform .5s ease; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+#site-header.show { transform: translateY(0); }
+.header-logo { max-height: 70px; max-width: 140px; object-fit: contain; margin-right: auto; display: block; }
+.header-nav { display: flex; align-items: center; gap: clamp(10px, 2.5vw, 30px); }
+.header-nav a { font-size: 10px; letter-spacing: .2em; text-transform: uppercase; color: #333; text-decoration: none; position: relative; }
+.header-nav > a::after { content: ''; position: absolute; bottom: -5px; left: 0; right: 0; height: 1px; background: var(--gold); transform: scaleX(0); transform-origin: left; transition: transform .3s ease; }
+.header-nav a:hover { color: var(--gold); }
+.header-nav > a:hover::after { transform: scaleX(1); }
+.nav-toggle { display: none; flex-direction: column; gap: 6px; cursor: pointer; background: none; border: none; padding: 10px; }
+.nav-toggle span { display: block; width: 25px; height: 1.5px; background: #333; transition: all .3s; }
+.nav-drawer { position: fixed; top: 90px; left: 0; width: 100%; background: var(--header-bg); display: flex; flex-direction: column; align-items: center; z-index: 499; max-height: 0; overflow: hidden; transition: max-height .4s ease; border-bottom: 1px solid rgba(0,0,0,.05); }
+.nav-drawer.open { max-height: 80vh; overflow-y: auto; }
+.nav-drawer a { padding: 1rem 2rem; width: 100%; text-align: center; font-size: .8rem; letter-spacing: .2em; text-transform: uppercase; color: #333; text-decoration: none; border-bottom: 1px solid rgba(0,0,0,.03); }
+.drawer-section-title { font-size: .85rem; letter-spacing: .3em; color: var(--gold); margin-top: 1rem; padding: 0.5rem 0; text-transform: uppercase; }
+
+/* ═══════════════════════════════════════════════════
+   MAIN WRAPPER & SECTIONS
+═══════════════════════════════════════════════════ */
+#main { min-height: 100vh; background: var(--bg-cream); position: relative; display: none; opacity: 0; transition: opacity .8s ease; width: 100%; }
+#main.visible { display: block; }
+#main.show { opacity: 1; }
+#main::before { content: ''; position: fixed; inset: 0; background: linear-gradient(180deg, rgba(239,238,233,.55) 0%, rgba(239,238,233,.18) 40%, rgba(239,238,233,.5) 100%); pointer-events: none; z-index: 0; }
+section { position: relative; z-index: 1; width: 100%; }
+.section-wrapper { max-width: 1000px; margin: 0 auto; padding: 90px 20px; width: 100%; }
+.section-label { text-align: center; font-size: 10px; letter-spacing: .4em; text-transform: uppercase; color: var(--gold); margin-bottom: 10px; }
+.section-title { text-align: center; font-family: 'Bodoni Moda', serif; font-size: clamp(24px, 4vw, 36px); color: var(--burgundy); margin-bottom: 15px; letter-spacing: .08em; text-transform: uppercase; }
+.section-rule { width: 50px; height: 1px; background: var(--gold); margin: 0 auto 20px; opacity: .5; }
+.section-sub { text-align: center; font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: clamp(16px, 2.5vw, 18px); color: var(--ink-mid); margin-bottom: 50px; }
+
+/* ═══════════════════════════════════════════════════
+   HERO
+═══════════════════════════════════════════════════ */
+#hero { min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: calc(90px + 40px) 20px 60px; }
+.hero-top-wrap {
+  width: 100%;
+  max-width: 980px;
+  margin: 0 auto 24px;
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(181, 156, 122, 0.35);
+  box-shadow: 0 16px 45px rgba(0,0,0,0.08);
+  border-radius: 6px;
+}
+.hero-tier-video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  z-index: 0;
+  pointer-events: none;
+}
+.hero-top-wrap::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(239,238,233,.8) 0%, rgba(239,238,233,.62) 50%, rgba(239,238,233,.82) 100%);
+  z-index: 1;
+}
+.hero-top-content {
+  position: relative;
+  z-index: 2;
+  padding: 48px 24px 36px;
+}
+.hero-names-stacked { display: flex; flex-direction: column; align-items: center; gap: 5px; opacity: 0; animation: fadeUp 1.2s .6s ease forwards; margin-bottom: 25px; width: 100%; }
+.partner-name { font-family: 'Bodoni Moda', serif; font-size: clamp(2.5rem, 8vw, 4.5rem); color: var(--burgundy); letter-spacing: 0.1em; line-height: 1; text-transform: uppercase; }
+.hero-amp { font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: clamp(2rem, 5vw, 3rem); color: var(--gold); line-height: 1; }
+.hero-invite-text { font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: clamp(1.2rem, 3vw, 1.5rem); color: #555; letter-spacing: 0.05em; line-height: 1.6; opacity: 0; animation: fadeUp 1.2s 0.8s ease forwards; margin-bottom: 40px;}
+
+.hero-dates-wrapper { display: flex; gap: 1.5rem; justify-content: center; flex-wrap: wrap; margin-bottom: 40px; opacity: 0; animation: fadeUp 1.2s 1s ease forwards; width: 100%; max-width: 800px;}
+.hero-date-box { background: #fff; border: 1px solid rgba(181, 156, 122, 0.3); padding: 1.5rem; text-align: center; display: flex; flex-direction: column; gap: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); flex: 1; min-width: 250px;}
+.hd-date { font-family: 'Bodoni Moda', serif; font-size: 1.5rem; color: var(--burgundy); }
+.hd-names { font-size: 0.7rem; letter-spacing: 0.2em; color: var(--gold); text-transform: uppercase; }
+.hd-loc { font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 1.1rem; color: var(--ink-mid); }
+
+.btn-read-story { display: inline-block; padding: 1rem 2.5rem; border: 1px solid var(--burgundy); color: var(--burgundy); font-family: 'Literaturnaya', serif; font-size: 0.8rem; letter-spacing: 0.2em; text-transform: uppercase; text-decoration: none; transition: all 0.3s ease; margin-bottom: 60px; opacity: 0; animation: fadeUp 1.2s 1.1s ease forwards; }
+.btn-read-story:hover { background: var(--burgundy); color: #fff; }
+
+.hero-welcome-block { width: 100%; max-width: 680px; margin: 0 auto; text-align: center; padding: 40px 20px; background: #fff; border: 1px solid rgba(181, 156, 122, 0.3); box-shadow: 0 10px 40px rgba(0,0,0,0.03); opacity: 0; animation: fadeUp 1.2s 1.2s ease forwards; }
+.hero-welcome-block p { font-family: 'Literaturnaya', serif; font-size: 0.95rem; color: #444; line-height: 1.9; margin-bottom: 1.5rem; }
+.welcome-greeting { font-family: 'Bodoni Moda', serif !important; font-size: 1.4rem !important; color: var(--burgundy) !important; letter-spacing: 0.05em; margin-bottom: 1.5rem !important; }
+.welcome-signoff { margin-top: 2rem; font-family: 'Cormorant Garamond', serif !important; font-style: italic; font-size: 1.1rem !important; color: #555 !important; }
+.welcome-signoff strong { display: block; margin-top: 10px; font-family: 'Sloop Script Pro', 'Blosta Script', cursive; font-size: clamp(2rem, 6vw, 2.5rem); font-style: normal; font-weight: normal; color: var(--burgundy); }
+
+/* ═══════════════════════════════════════════════════
+   OUR STORY 
+═══════════════════════════════════════════════════ */
+#our-story { background: var(--beige-dark); }
+.story-container { max-width: 800px; width: 100%; margin: 0 auto; text-align: center; padding: 0 15px;}
+.story-text-block { text-align: left; margin-bottom: 50px; }
+.story-text-block p { font-family: 'Cormorant Garamond', serif; font-size: clamp(1rem, 2.5vw, 1.2rem); color: var(--ink-mid); line-height: 1.9; margin-bottom: 1rem; text-align: center; }
+
+.story-hero-img { width: 100%; max-width: 500px; margin: 0 auto; border-radius: 4px; position: relative; }
+.story-hero-img img { width: 100%; height: auto; aspect-ratio: 4/5; object-fit: cover; display: block; border-radius: 4px; box-shadow: 0 16px 60px rgba(0,0,0,.1); }
+.story-hero-img::after { content: ''; position: absolute; inset: -8px; border: 1.5px solid rgba(212,175,55,.4); border-radius: 6px; pointer-events: none; z-index: 1; }
+
+/* ═══════════════════════════════════════════════════
+   THE CELEBRATIONS (Separated Event Hubs)
+═══════════════════════════════════════════════════ */
+.event-hub-title { font-family: 'Bodoni Moda', serif; font-size: clamp(1.8rem, 4vw, 2.5rem); color: var(--burgundy); text-align: center; margin: 60px 0 20px; letter-spacing: 0.1em; text-transform: uppercase; }
+.event-hub-date { text-align: center; font-size: 0.85rem; letter-spacing: 0.3em; color: var(--gold); text-transform: uppercase; margin-bottom: 40px; }
+
+.travel-destination { margin-bottom: 50px; width: 100%; }
+.travel-dest-header { display: flex; align-items: center; gap: 16px; margin-bottom: 24px; }
+.travel-dest-header hr { flex: 1; border: none; border-top: 1px solid rgba(181, 156, 122, 0.4); }
+.travel-dest-header h3 { font-family: 'Bodoni Moda', serif; font-size: clamp(1.1rem, 2.5vw, 1.4rem); color: var(--burgundy); letter-spacing: .08em; text-align: center; }
+
+.travel-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 1.5rem; }
+.travel-card { background: #fff; border: 1px solid var(--card-border); padding: 2rem 1.5rem; text-align: center; transition: transform .3s, box-shadow .3s; box-shadow: 0 4px 15px rgba(0,0,0,0.03); width: 100%; }
+.travel-card:hover { transform: translateY(-4px); box-shadow: 0 10px 30px rgba(0,0,0,0.06); }
+.travel-card-label { font-size: 8px; letter-spacing: .3em; text-transform: uppercase; color: var(--gold); margin-bottom: 8px; }
+.travel-card-title { font-family: 'Bodoni Moda', serif; font-size: 1.3rem; color: var(--burgundy); margin-bottom: 12px; }
+.travel-card p { font-size: 0.9rem; color: var(--ink-light); line-height: 1.8; margin-bottom: 10px; }
+.travel-card strong { color: var(--burgundy); }
+
+.btn-utility { display: inline-block; padding: 0.7rem 1.2rem; background: var(--gold); color: #fff; text-decoration: none; font-size: 0.7rem; letter-spacing: 0.15em; text-transform: uppercase; border-radius: 4px; transition: background 0.3s; margin: 5px; }
+.btn-utility:hover { background: var(--burgundy); }
+
+.map-container { width: 100%; max-width: 500px; margin: 20px auto; mix-blend-mode: multiply; }
+.map-container img { width: 100%; height: auto; display: block; border-radius: 4px; }
+.full-width-image { width: 100%; height: auto; display: block; border-radius: 4px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+.hotel-gallery { margin-top: 18px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; }
+.hotel-card { background: #fff; border: 1px solid var(--card-border); border-radius: 6px; overflow: hidden; box-shadow: 0 7px 20px rgba(0,0,0,0.06); }
+.hotel-card-link { display: block; text-decoration: none; color: inherit; }
+.hotel-card-image { width: 100%; aspect-ratio: 16/10; object-fit: cover; display: block; background: linear-gradient(135deg, rgba(181,156,122,.3), rgba(239,238,233,.75)); }
+.hotel-card-body { padding: 0.95rem 0.9rem 1rem; text-align: center; }
+.hotel-card-index { font-size: .62rem; letter-spacing: .22em; text-transform: uppercase; color: var(--gold); margin-bottom: 7px; }
+.hotel-card-name { font-family: 'Bodoni Moda', serif; font-size: .95rem; color: var(--burgundy); line-height: 1.35; margin-bottom: 8px; text-transform: uppercase; }
+.hotel-card-meta { font-size: .8rem; color: var(--ink-light); line-height: 1.5; }
+.hotel-card-contact { margin-top: 8px; font-size: .76rem; color: var(--ink-mid); line-height: 1.5; word-break: break-word; }
+.hotel-card-contact a { color: var(--ink-mid); text-decoration: none; border-bottom: 1px dashed rgba(77,33,33,.25); }
+.hotel-card-contact a:hover { color: var(--gold); border-bottom-color: var(--gold); }
+
+/* ═══════════════════════════════════════════════════
+   INFO & DRESS CODE
+═══════════════════════════════════════════════════ */
+#info { background: var(--beige); }
+.info-text-block { max-width: 800px; width: 100%; margin: 0 auto 40px; text-align: center; font-family: 'Cormorant Garamond', serif; font-size: 1.15rem; line-height: 1.8; color: var(--ink-mid); }
+.color-palette { display: flex; justify-content: center; gap: 15px; margin: 30px 0; flex-wrap: wrap; }
+.color-swatch { width: 90px; height: 90px; border-radius: 4px; display: flex; align-items: flex-end; justify-content: center; padding-bottom: 10px; color: #fff; font-size: 0.65rem; letter-spacing: 0.1em; text-transform: uppercase; text-shadow: 0 1px 3px rgba(0,0,0,0.5); }
+
+/* ═══════════════════════════════════════════════════
+   FAQ
+═══════════════════════════════════════════════════ */
+.faq-layout { max-width: 900px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 2.5rem; }
+.faq-col-title { font-family: 'Bodoni Moda', serif; font-size: 1.1rem; color: var(--burgundy); letter-spacing: .1em; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 10px; }
+.faq-col-title::after { content: ''; flex: 1; height: 1px; background: rgba(181, 156, 122, 0.4); }
+.faq-item { border-bottom: 1px solid var(--card-border); overflow: hidden; }
+.faq-question { width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 1rem 0; background: none; border: none; cursor: pointer; text-align: left; font-family: 'Raleway', sans-serif; font-size: 0.9rem; color: var(--ink-mid); font-weight: 500; transition: color .2s; }
+.faq-question:hover { color: var(--burgundy); }
+.faq-icon { flex-shrink: 0; width: 20px; height: 20px; border: 1px solid var(--gold); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--gold); font-size: .7rem; transition: transform .3s, background .2s; }
+.faq-item.open .faq-icon { transform: rotate(45deg); background: var(--burgundy); border-color: var(--burgundy); color: #fff; }
+.faq-answer { max-height: 0; overflow: hidden; font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 0.95rem; color: var(--ink-light); line-height: 1.7; transition: max-height .4s ease, padding .3s ease; padding: 0; }
+.faq-item.open .faq-answer { max-height: 300px; padding: 0 0 1.2rem 0; }
+
+/* ═══════════════════════════════════════════════════
+   RSVP PAGE (Merlot Red Theme with Split Events)
+═══════════════════════════════════════════════════ */
+#rsvp-page { background: var(--merlot); display: flex; flex-direction: column; align-items: center; padding: 100px 15px; position: relative; overflow: hidden;}
+.rsvp-inner { max-width: 760px; width: 100%; position: relative; z-index: 1; }
+.rsvp-header { text-align: center; margin-bottom: 3rem; }
+.rsvp-header h2 { font-family: 'Bodoni Moda', serif; font-size: clamp(2.5rem, 6vw, 3.5rem); color: #fff; letter-spacing: .1em; font-style: italic; margin-bottom: 1rem;}
+.rsvp-header p { font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 1.15rem; color: rgba(255,255,255,0.85); line-height: 1.8; max-width: 580px; margin: 0 auto; }
+
+.rsvp-card { background: rgba(0,0,0,0.15); border: 1px solid rgba(255,255,255,0.2); padding: 3rem 2rem; box-shadow: 0 15px 50px rgba(0,0,0,0.2); border-radius: 4px; position: relative; backdrop-filter: blur(10px); width: 100%; }
+
+/* Event Specific RSVP Blocks */
+.rsvp-event-box { background: rgba(255,255,255,0.05); border: 1px solid rgba(212,175,55,0.3); border-radius: 4px; padding: 1.5rem; margin-bottom: 2rem; }
+.rsvp-event-header { font-family: 'Bodoni Moda', serif; font-size: 1.2rem; color: var(--gold); letter-spacing: 0.1em; margin-bottom: 1.2rem; text-align: center; text-transform: uppercase; border-bottom: 1px solid rgba(212,175,55,0.2); padding-bottom: 10px;}
+
+.form-row { display: flex; gap: 1.2rem; flex-wrap: wrap; }
+.form-group { flex: 1 1 200px; display: flex; flex-direction: column; gap: .4rem; margin-bottom: 1.4rem; }
+.form-group.full { flex-basis: 100%; }
+
+/* HIGH CONTRAST TEXT & 16px FONT SIZE FOR iOS ZOOM FIX */
+.form-group label { font-family: 'Literaturnaya', serif; font-size: 0.85rem; color: #fff; font-weight: 500; letter-spacing: 0.05em; }
+.form-group label .req { color: #e5b0b0; }
+.form-group input[type="text"], .form-group input[type="email"], .form-group select, .form-group textarea { padding: .85rem 1rem; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.3); border-radius: 4px; font-family: 'Raleway', sans-serif; font-size: 16px !important; color: #fff; outline: none; transition: border-color .3s; width: 100%; appearance: none; box-sizing: border-box;}
+.form-group input::placeholder, .form-group textarea::placeholder { color: rgba(255,255,255,0.5); }
+.form-group textarea { resize: vertical; }
+.form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: var(--gold); box-shadow: 0 0 0 2px rgba(181, 156, 122, 0.2); background: rgba(255,255,255,0.15);}
+
+.radio-group { display: flex; flex-direction: column; gap: 0.8rem; margin-top: 5px; }
+.radio-label { display: flex; align-items: flex-start; gap: 0.6rem; cursor: pointer; font-size: 0.95rem; color: #fff; line-height: 1.4;}
+.radio-label input[type="radio"], .radio-label input[type="checkbox"] { width: 18px; height: 18px; accent-color: var(--gold); cursor: pointer; flex-shrink: 0; margin-top: 2px;}
+.form-divider { height: 1px; background: rgba(255,255,255,0.2); margin: 2rem 0; }
+
+.btn-submit { width: 100%; padding: 1.2rem; background: #fff; color: var(--merlot); border: none; border-radius: 4px; font-family: 'Bodoni Moda', serif; font-size: 1rem; letter-spacing: 0.15em; text-transform: uppercase; cursor: pointer; transition: background 0.3s, transform 0.2s; margin-top: 1rem; }
+.btn-submit:hover { background: var(--gold); color: #fff; transform: translateY(-2px); }
+
+#rsvp-success { display: none; text-align: center; padding: 3rem 1rem; }
+#rsvp-success.show { display: block; }
+.success-icon { font-size: 3rem; color: var(--gold); margin-bottom: 1rem; }
+#rsvp-success h3 { font-family: 'Bodoni Moda', serif; font-size: 2.2rem; color: #fff; margin-bottom: .8rem; }
+#rsvp-success p { font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 1.1rem; color: rgba(255,255,255,0.85); line-height: 1.75; }
+
+/* Confetti Overlay */
+.confetti { position: absolute; width: 10px; height: 10px; background-color: var(--gold); opacity: 0; animation: fall 3s linear forwards; pointer-events: none; z-index: 100;}
+@keyframes fall { 0% { opacity: 1; transform: translateY(-100px) rotate(0deg); } 100% { opacity: 0; transform: translateY(800px) rotate(720deg); } }
+
+/* ═══════════════════════════════════════════════════
+   AUDIO & FOOTER
+═══════════════════════════════════════════════════ */
+#audio-player { position: fixed; bottom: 2rem; right: 2rem; z-index: 200; display: flex; flex-direction: column; align-items: center; gap: 4px; }
+.audio-btn { width: 50px; height: 50px; background: var(--burgundy); border: none; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; color: #fff; font-size: 1.1rem; box-shadow: 0 4px 20px rgba(0,0,0,.2); transition: transform .25s; }
+.audio-btn:hover { transform: scale(1.1); }
+.audio-lbl { font-size: 7px; letter-spacing: .2em; text-transform: uppercase; color: var(--ink-mid); background: rgba(255,255,255,.8); padding: 2px 8px; border-radius: 50px; }
+footer { text-align: center; padding: 40px 20px 60px; font-size: 9px; letter-spacing: .4em; color: var(--ink-light); text-transform: uppercase; background: var(--bg-cream); line-height: 2.4; width: 100%;}
+.footer-rule { width: 80px; height: 1px; background: var(--card-border); margin: 0 auto 20px; }
+.footer-names { font-family: 'Bodoni Moda', serif; font-style: italic; font-size: 1.4rem; color: var(--burgundy); letter-spacing: .06em; margin-bottom: 6px; text-transform: none; }
+.footer-credit a { color: var(--gold); text-decoration: none; }
+
+/* ═══════════════════════════════════════════════════
+   RESPONSIVE (Fixed for Laptop Widths)
+═══════════════════════════════════════════════════ */
+@media(min-width: 1025px) {
+  /* LAPTOP SPECIFIC FIXES */
+  #gate-bg { object-fit: contain; background: var(--bg-cream); }
+}
+
+@media(max-width: 1024px) {
+  #site-header { height: 70px; padding: 0 16px; }
+  .header-logo { max-height: 50px; max-width: 100px; }
+  .header-nav { display: none; }
+  .nav-toggle { display: flex; margin-left: auto; }
+  .nav-drawer { top: 70px; }
+  :root { --hh: 70px; }
+  .section-wrapper { padding: 70px 16px; }
+}
+
+@media(max-width: 900px) {
+  .faq-layout { grid-template-columns: 1fr; }
+  .hotel-gallery { grid-template-columns: 1fr; }
+}
+
+@media(max-width: 600px) {
+  #hero { padding: calc(90px + 20px) 16px 50px; }
+  .hero-top-content { padding: 36px 14px 24px; }
+  .hero-dates-wrapper { flex-direction: column; gap: 1rem;}
+  
+  #splash, #secondary-splash { height: 100dvh; min-height: 100dvh; }
+  #splash video, #secondary-splash video { object-fit: cover; object-position: center; }
+  
+  .travel-grid { grid-template-columns: 1fr; gap: 1.2rem;}
+  .travel-card { padding: 1.5rem; }
+  
+  .form-group { flex-basis: 100%; }
+  .rsvp-card { padding: 2rem 1.2rem;}
+  .rsvp-event-box { padding: 1rem; }
+  .splash-hint { bottom: 25px; }
+}
+</style>
+</head>
+<body>
+
+<div id="splash">
+  <video id="splash-video" autoplay muted playsinline preload="auto">
+    <source src="splash.mp4#t=0.001" type="video/mp4"/>
+  </video>
+  <div class="splash-content">
+    <div class="splash-divider"><span></span><i>✦</i><span></span></div>
+  </div>
+  <div class="splash-hint">Tap anywhere to begin</div>
+  <div class="splash-progress" id="splash-progress">
+    <div class="splash-progress-bar" id="splash-progress-bar"></div>
+  </div>
+</div>
+
+<div id="secondary-splash" class="hidden">
+  <video id="secondary-splash-video" autoplay muted playsinline preload="auto">
+  </video>
+</div>
+
+<div id="gate">
+  <img src="gate_png.png" alt="" id="gate-bg" aria-hidden="true" onerror="this.style.display='none'"/>
+  <img src="logo.png" alt="T&D" class="gate-logo" onerror="this.style.display='none'"/>
+  
+  <p class="gate-pretitle">Together With Their Families</p>
+  <div class="gate-divider"><hr/><i>✦</i><hr/></div>
+  
+  <div class="gate-names-stacked">
+    <div class="name-block"><span class="name-first">Tracey</span><span class="name-last">Sampson</span></div>
+    <span class="gate-amp">&</span>
+    <div class="name-block"><span class="name-first">David</span><span class="name-last">Mcalister</span></div>
+  </div>
+  
+  <p class="gate-subtitle">invite you to celebrate their love</p>
+  
+  <div class="gate-form">
+    <label for="guest-name-input">Please enter your first and last name to open the website</label>
+    <input type="text" id="guest-name-input" placeholder="First and Last Name" autocomplete="off"/>
+    <button class="btn-open" id="open-btn">Open website</button>
+    <p id="gate-error" aria-live="polite"></p>
+  </div>
+</div>
+
+<audio id="bg-audio" loop preload="none">
+  <source src="music.mp3" type="audio/mpeg"/>
+</audio>
+
+<header id="site-header">
+  <a href="#"><img src="logo.png" alt="T&D Logo" class="header-logo" onerror="this.style.display='none'"/></a>
+  <nav class="header-nav">
+    <a href="#our-story">OUR STORY</a>
+    <a href="#events-hub">CELEBRATIONS</a>
+    <a href="#info">INFO</a>
+    <a href="#faq">FAQ</a>
+    <a class="header-rsvp-btn" href="#rsvp-page">RSVP</a>
+  </nav>
+  <button class="nav-toggle" id="nav-toggle" aria-label="Open menu">
+    <span></span><span></span><span></span>
+  </button>
+</header>
+
+<div class="nav-drawer" id="nav-drawer">
+  <a href="#our-story" onclick="closeDrawer()">OUR STORY</a>
+  <a href="#events-hub" onclick="closeDrawer()">CELEBRATIONS</a>
+  <a href="#info" onclick="closeDrawer()">INFO & DRESS CODE</a>
+  <a href="#faq" onclick="closeDrawer()">FAQ</a>
+  <a href="#rsvp-page" onclick="closeDrawer()">RSVP</a>
+</div>
+
+<div id="audio-player">
+  <button class="audio-btn" id="audio-btn" aria-label="Play background music">♪</button>
+  <span class="audio-lbl" id="audio-lbl">Music</span>
+</div>
+
+<div id="main">
+
+  <section id="hero">
+    <div class="hero-top-wrap">
+      <video id="hero-tier-video" class="hero-tier-video" autoplay muted loop playsinline preload="metadata">
+      </video>
+      <div class="hero-top-content">
+        <div class="hero-names-stacked">
+          <div class="partner-name">Tracey</div>
+          <div class="hero-amp">&</div>
+          <div class="partner-name">David</div>
+        </div>
+        
+        <p class="hero-invite-text">
+          request the pleasure of your company<br>
+          <span id="dynamic-hero-location">at their wedding celebrations</span>
+        </p>
+
+        <div class="hero-dates-wrapper reveal reveal-d1">
+          <div class="hero-date-box tier-uk">
+            <span class="hd-date">20. 03. 2027</span>
+            <span class="hd-names">TRACEY & DAVID</span>
+            <span class="hd-loc">London</span>
+          </div>
+          <div class="hero-date-box tier-italy">
+            <span class="hd-date">26. 06. 2027</span>
+            <span class="hd-names">TRACEY & DAVID</span>
+            <span class="hd-loc">Lago di Garda</span>
+          </div>
+        </div>
+
+        <a href="#our-story" class="btn-read-story reveal reveal-d2">Read Our Story</a>
+      </div>
+    </div>
+
+    <div class="hero-welcome-block reveal reveal-d3">
+      <p class="welcome-greeting">Dear <span class="guest-name-display">Family & Friends</span>,</p>
+      <p>Welcome to our wedding website.</p>
+      <p>We’re getting married!!! We would be honoured to have you with us to celebrate.</p>
+      <p>Our lives have been shaped by our family and friends, and this next chapter will be no different. It would mean a great pleasure to have you with us as we turn the next page.</p>
+      <p>We hope you can celebrate this special occasion with us. Please let us know by RSVPing.</p>
+      <p class="welcome-signoff">
+        Consider this your invitation<br>
+        With love,<br>
+        <strong>Tracey & David</strong>
+      </p>
+    </div>
+  </section>
+
+  <section id="our-story">
+    <div class="section-wrapper story-container">
+      <div class="section-label reveal">The Beginning</div>
+      <h2 class="section-title reveal reveal-d1">Our Love Story</h2>
+      <div class="section-rule reveal reveal-d2"></div>
+  
+      <div class="story-text-block reveal reveal-d3">
+        <p>It started in 2023</p>
+        <p>He thought she looked and sounded pretty ﬁne.</p>
+        <p>She ignored him for a while - "I was busyyyyyy - Tracey".</p>
+        <p>But she came around and they bonded over messages about garden centres, a shared love of skiing (hmmmm) and home Improvements (in hindsight not great chat).</p>
+        <p>A ﬁrst date in SOHO at a sushi restaurant, a ﬁrst kiss in Piccadilly station and a ﬁrst weekend away in Bath all sealed the deal.</p>
+        <p>Being welcomed by loving and welcoming families and sharing lots of laughter together set us on a path to today.</p>
+        <p>We’ve discovered the delights of Wallington and Alperton, and been on some adventures too, from Belgium to Bangkok, Miami to New York and much in between.</p>
+        <p>In Koh Samui set amongst palm trees on a sandy beach one evening in March 2025, we were engaged.</p>
+        <p>And now for the wedding, a time to celebrate with the family and friends that have been with us throughout our journey and who will be for the future.</p>
+      </div>
+      
+      <div class="story-hero-img reveal">
+        <img src="image_DT.png" alt="Tracey and David" onerror="this.style.display='none'"/>
+      </div>
+    </div>
+  </section>
+
+  <section id="events-hub" class="section-wrapper">
+    
+    <div class="tier-uk" style="margin-bottom: 80px;">
+      <h2 class="event-hub-title reveal">The UK Celebration</h2>
+      <p class="event-hub-date reveal">London • 20 March 2027</p>
+
+      <div class="travel-destination">
+        <div class="travel-dest-header reveal">
+          <h3><span>TRADITIONAL WEDDING</span></h3>
+          <hr/>
+        </div>
+        <div class="travel-grid reveal">
+          <div class="travel-card">
+            <p class="travel-card-label">2:00 PM - 9:30 PM</p>
+            <p class="travel-card-title">St Johns Church</p>
+            <p>Hyde Park Crescent, Tyburnia, London W2 2QD</p>
+            <p>Walking distance from Paddington, Lancaster Gate, and Marble Arch tube stations.</p>
+            <p><strong>Parking:</strong> Reserved parking is available in front of the church for a fee. No congestion charge.</p>
+            <a href="data:text/calendar;charset=utf8,BEGIN:VCALENDAR%0AVERSION:2.0%0ABEGIN:VEVENT%0ADTSTART:20270320T140000Z%0ADTEND:20270320T213000Z%0ASUMMARY:TRACEY%20%26%20DAVID%20%E2%80%93%20TRADITIONAL%20WEDDING%0ALOCATION:St%20Johns%20Church%2C%20Hyde%20Park%20Crescent%2C%20London%20W2%202QD%0AEND:VEVENT%0AEND:VCALENDAR" download="Tracey_David_Wedding_UK.ics" class="btn-utility">Add to Calendar</a>
+            <a href="https://maps.google.com/?q=St+Johns+Church+Hyde+Park+Crescent+London" target="_blank" rel="noopener" class="btn-utility">Google Maps</a>
+            
+            <div class="map-container">
+               <img src="map.jpeg" alt="Map to St Johns Church" onerror="this.style.display='none'"/>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="travel-destination">
+        <div class="travel-dest-header reveal">
+          <h3><span>WHERE TO STAY</span></h3>
+          <hr/>
+        </div>
+        <div class="reveal">
+          <div class="hotel-gallery">
+            <article class="hotel-card">
+              <a class="hotel-card-link" href="https://maps.google.com/?q=Royal+Lancaster+London+Lancaster+Terrace" target="_blank" rel="noopener">
+                <img src="royal.png" alt="Royal Lancaster London" class="hotel-card-image" onerror="this.style.display='none'"/>
+              </a>
+              <div class="hotel-card-body">
+                <div class="hotel-card-index">01</div>
+                <div class="hotel-card-name">ROYAL LANCASTER LONDON</div>
+                <div class="hotel-card-meta">Lancaster Terrace<br/>5 minutes on foot</div>
+                <div class="hotel-card-contact">
+                <a href="tel:+442075516000">+44 20 7551 6000</a><br/>
+                <a href="mailto:info@royallancaster.com">info@royallancaster.com</a>
+                </div>
+              </div>
+            </article>
+            <article class="hotel-card">
+              <a class="hotel-card-link" href="https://maps.google.com/?q=Hilton+London+Paddington+146+Praed+St" target="_blank" rel="noopener">
+                <img src="hilton.png" alt="Hilton London Paddington" class="hotel-card-image" onerror="this.style.display='none'"/>
+              </a>
+              <div class="hotel-card-body">
+                <div class="hotel-card-index">02</div>
+                <div class="hotel-card-name">HILTON LONDON PADDINGTON</div>
+                <div class="hotel-card-meta">146 Praed St<br/>5 minutes on foot</div>
+                <div class="hotel-card-contact">
+                <a href="tel:+442078500500">+44 20 7850 0500</a><br/>
+                <a href="mailto:reservations.lonpd@hilton.com">reservations.lonpd@hilton.com</a>
+                </div>
+              </div>
+            </article>
+            <article class="hotel-card">
+              <a class="hotel-card-link" href="https://maps.google.com/?q=Premier+Inn+Paddington+Basin+Paddington+Exchange+N+Wharf+Rd" target="_blank" rel="noopener">
+                <img src="basin.png" alt="Premier Inn Paddington Basin" class="hotel-card-image" onerror="this.style.display='none'"/>
+              </a>
+              <div class="hotel-card-body">
+                <div class="hotel-card-index">03</div>
+                <div class="hotel-card-name">PREMIER INN PADDINGTON BASIN</div>
+                <div class="hotel-card-meta">Paddington Exchange, N Wharf Rd<br/>10 minutes on foot</div>
+                <div class="hotel-card-contact">
+                <a href="tel:+443337777291">+44 333 777 7291</a><br/>
+                <a href="mailto:contactus@premierinn.com">contactus@premierinn.com</a>
+                </div>
+              </div>
+            </article>
+          </div>
+        </div>
+      </div>
+
+      <div class="travel-destination">
+        <div class="travel-dest-header reveal">
+          <h3><span>THINGS TO DO</span></h3>
+          <hr/>
+        </div>
+        <div class="travel-grid reveal">
+          <div class="travel-card">
+            <p class="travel-card-label">Explore London</p>
+            <p class="travel-card-title">Sightseeing</p>
+            <p>London offers endless possibilities. From historic sites to world-class museums, there's something for everyone. Let us know if you need insider tips!</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tier-italy" style="margin-bottom: 80px;">
+      <h2 class="event-hub-title reveal">The Italy Celebration</h2>
+      <p class="event-hub-date reveal">Lago di Garda • 25-27 June 2027</p>
+
+      <div class="travel-destination">
+        <div class="travel-dest-header reveal">
+          <h3><span>WEDDING WEEKEND ITINERARY</span></h3>
+          <hr/>
+        </div>
+        <div class="travel-grid reveal">
+          <div class="travel-card">
+            <p class="travel-card-label">Friday 25th June</p>
+            <p class="travel-card-title">Welcome Drinks</p>
+            <p><strong>Location:</strong> TBC</p>
+            <p><strong>Dress Code:</strong> Colourful / Prints</p>
+          </div>
+          <div class="travel-card">
+            <p class="travel-card-label">Saturday 26th June</p>
+            <p class="travel-card-title">Church & Reception</p>
+            <p><strong>Reception:</strong> Villa Bettoni, Via della Libertà 77, Gargnano</p>
+            <p><strong>Dress Code:</strong> Formal. 12:00PM – 1:00AM. Parking available.</p>
+          </div>
+          <div class="travel-card">
+            <p class="travel-card-label">Sunday 27th June</p>
+            <p class="travel-card-title">Farewell Lunch</p>
+            <p><strong>Location:</strong> TBC (Al Fresco / Pool Party)</p>
+            <p><strong>Dress Code:</strong> All White / Cream / Beige</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="travel-destination">
+        <div class="travel-dest-header reveal">
+          <h3><span>GETTING THERE</span></h3>
+          <hr/>
+        </div>
+        <div class="travel-grid reveal">
+          <div class="travel-card">
+            <p class="travel-card-label">Flights & Trains</p>
+            <p class="travel-card-title">Transport</p>
+            <p><strong>Verona (VRN)</strong> is the closest airport (~1 hour). Milan Bergamo (BGY) and Linate (LIN) are 1.5 - 2.5 hours away.</p>
+            <p>Nearest train stations: Desenzano del Garda and Brescia.</p>
+            <p>We recommend pre-booking a private transfer or car hire, as ride-hailing apps are limited. We are also exploring shared transfers based on RSVPs.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="travel-destination">
+        <div class="travel-dest-header reveal">
+          <h3><span>WHERE TO STAY</span></h3>
+          <hr/>
+        </div>
+        <div class="reveal">
+          <div class="hotel-gallery">
+            <article class="hotel-card">
+              <a class="hotel-card-link" href="https://maps.google.com/?q=Lefay+Resort+%26+Spa+Lago+di+Garda+Via+Angelo+Feltrinelli+136" target="_blank" rel="noopener">
+                <img src="lefay.png" alt="Lefay Resort and Spa Lago di Garda" class="hotel-card-image" onerror="this.style.display='none'"/>
+              </a>
+              <div class="hotel-card-body">
+                <div class="hotel-card-index">01</div>
+                <div class="hotel-card-name">LEFAY RESORT &amp; SPA LAGO DI GARDA</div>
+                <div class="hotel-card-meta">Via Angelo Feltrinelli, 136<br/>8 minutes by car</div>
+                <div class="hotel-card-contact">
+                <a href="tel:+390365241800">+39 0365 241800</a><br/>
+                <a href="mailto:booking@lefayresorts.com">booking@lefayresorts.com</a>
+                </div>
+              </div>
+            </article>
+            <article class="hotel-card">
+              <a class="hotel-card-link" href="https://maps.google.com/?q=Grand+Hotel+Fasano+Via+Zanardelli+190" target="_blank" rel="noopener">
+                <img src="grand.png" alt="Grand Hotel Fasano" class="hotel-card-image" onerror="this.style.display='none'"/>
+              </a>
+              <div class="hotel-card-body">
+                <div class="hotel-card-index">02</div>
+                <div class="hotel-card-name">GRAND HOTEL FASANO</div>
+                <div class="hotel-card-meta">Via Zanardelli, 190<br/>6 minutes by car</div>
+                <div class="hotel-card-contact">
+                <a href="tel:+390365290220">+39 0365 290220</a><br/>
+                <a href="mailto:info@ghf.it">info@ghf.it</a>
+                </div>
+              </div>
+            </article>
+            <article class="hotel-card">
+              <a class="hotel-card-link" href="https://maps.google.com/?q=Hotel+Gardenia+al+Lago+Via+Colletta+53" target="_blank" rel="noopener">
+                <img src="lago.png" alt="Hotel Gardenia al Lago" class="hotel-card-image" onerror="this.style.display='none'"/>
+              </a>
+              <div class="hotel-card-body">
+                <div class="hotel-card-index">03</div>
+                <div class="hotel-card-name">HOTEL GARDENIA AL LAGO</div>
+                <div class="hotel-card-meta">Via Colletta, 53<br/>3 minutes by car</div>
+                <div class="hotel-card-contact">
+                <a href="tel:+39036571195">+39 0365 71195</a><br/>
+                <a href="mailto:info@gardenialalago.com">info@gardenialalago.com</a>
+                </div>
+              </div>
+            </article>
+          </div>
+        </div>
+      </div>
+
+      <div class="travel-destination">
+        <div class="travel-dest-header reveal">
+          <h3><span>THINGS TO DO</span></h3>
+          <hr/>
+        </div>
+        <div class="travel-grid reveal">
+          <div class="travel-card">
+            <p class="travel-card-label">Explore Lake Garda</p>
+            <p class="travel-card-title">Sightseeing</p>
+            <p>Take a boat across the lake to Limone sul Garda, Malcesine, and Riva del Garda.</p>
+            <p>Wander through Gargnano and Salò for gelato, cafés, and beautiful views.</p>
+            <p>Enjoy a mountain adventure by cable car at Monte Baldo.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="info">
+    <div class="section-wrapper">
+      <p class="section-label reveal">The Details</p>
+      <h2 class="section-title reveal reveal-d1">INFO & DRESS CODE</h2>
+      <div class="section-rule reveal reveal-d2"></div>
+      
+      <div class="info-text-block reveal reveal-d3 tier-uk">
+        <p>Our wedding celebrates Nigerian, Ghanaian, and South Indian traditions rich in culture, symbolism, and joyful moments.</p>
+        <p><strong>Red</strong> sits at the heart of our celebration—a colour long associated with love, strength, and new beginnings, woven through tradition, ceremony, and celebration.</p>
+        
+        <div class="color-palette">
+          <div class="color-swatch" style="background-color: #A00E11;">Red Wine</div>
+          <div class="color-swatch" style="background-color: #70000E;">Dark Ruby</div>
+          <div class="color-swatch" style="background-color: #4C0000;">Mahogany</div>
+        </div>
+      </div>
+
+      <div class="travel-destination">
+        <div class="travel-dest-header reveal">
+          <h3><span>DRESS CODE GUIDELINES</span></h3>
+          <hr/>
+        </div>
+        
+        <div class="reveal" style="margin-bottom: 40px; text-align: center;">
+          <img src="dress.png" alt="Dress Code Illustration" style="width:100%; max-width:1000px; height:auto; display:block; margin:0 auto; object-fit:contain;" onerror="this.style.display='none'"/>
+        </div>
+
+        <div class="travel-grid reveal">
+          <div class="travel-card tier-uk">
+            <p class="travel-card-label">Aso Ebi Inspired</p>
+            <p class="travel-card-title">The Palette</p>
+            <p>Guests are invited to wear elegant shades of red — from deep burgundy and oxblood to brighter cherry and rust tones. You may opt for a custom outfit using our selected fabric, or dress within the palette in your own style.</p>
+            <p>Please note: White is strictly reserved for the bride.</p>
+          </div>
+          <div class="travel-card">
+            <p class="travel-card-label">Elegance</p>
+            <p class="travel-card-title">Women</p>
+            <p>Floor-length. Soft movement. Effortless elegance.</p>
+            <p>Think fluid silhouettes and light fabrics. A scarf or shawl is recommended for the Church Service.</p>
+            <p><strong>Footwear:</strong> Please avoid stiletto heels due to cobblestones and uneven terrain. Wedges, block heels, or flats are recommended.</p>
+          </div>
+          <div class="travel-card tier-uk">
+            <p class="travel-card-label">Structure</p>
+            <p class="travel-card-title">Men</p>
+            <p>Tailored, but if wanted, relaxed.</p>
+            <p>Lightweight suiting or traditional African attire (Agbada, kaftans). Ties are preferred. Strictly no linen, shorts, trainers, flip-flops, or crocs.</p>
+            <p>Smart shoes preferred (Oxfords, brogues, loafers).</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <section id="faq">
+    <div class="section-wrapper">
+      <p class="section-label reveal">Questions</p>
+      <h2 class="section-title reveal reveal-d1">FAQ</h2>
+      <div class="section-rule reveal reveal-d2"></div>
+      
+      <div class="faq-layout reveal">
+        <div class="faq-col">
+          <p class="faq-col-title">Before The Day</p>
+          <div class="faq-item tier-uk">
+            <button class="faq-question" onclick="toggleFaq(this)">What is a traditional African wedding like?<span class="faq-icon">+</span></button>
+            <div class="faq-answer">A vibrant and joyful celebration, rich in culture, music, and meaningful traditions, where guests are part of the experience.</div>
+          </div>
+          <div class="faq-item tier-uk">
+            <button class="faq-question" onclick="toggleFaq(this)">What is Aso Ebi?<span class="faq-icon">+</span></button>
+            <div class="faq-answer">Aso Ebi, meaning “family cloth,” reflects unity through coordinated dress. Participation is optional, though encouraged.</div>
+          </div>
+          <div class="faq-item tier-uk">
+            <button class="faq-question" onclick="toggleFaq(this)">Can I purchase the wedding fabric?<span class="faq-icon">+</span></button>
+            <div class="faq-answer">There is limited fabric, however, if you wish to take part, simply indicate this on your RSVP and we will share further details.</div>
+          </div>
+          <div class="faq-item tier-uk">
+            <button class="faq-question" onclick="toggleFaq(this)">Do I need to wear traditional attire?<span class="faq-icon">+</span></button>
+            <div class="faq-answer">Not at all. Formal Western attire within the colour palette is equally welcome.</div>
+          </div>
+          <div class="faq-item tier-uk">
+            <button class="faq-question" onclick="toggleFaq(this)">What do men typically wear?<span class="faq-icon">+</span></button>
+            <div class="faq-answer">Agbada, kaftans, with trousers or tailored sets in the chosen tones.</div>
+          </div>
+          <div class="faq-item tier-italy">
+            <button class="faq-question" onclick="toggleFaq(this)">Are children allowed?<span class="faq-icon">+</span></button>
+            <div class="faq-answer">For the Italy celebration, due to our lakeside setting, this will be an adults-only celebration (with the exception of the immediate Bridal Party). We hope you can join us!</div>
+          </div>
+        </div>
+
+        <div class="faq-col">
+          <p class="faq-col-title">On The Day</p>
+          <div class="faq-item">
+            <button class="faq-question" onclick="toggleFaq(this)">Arrival & Timings<span class="faq-icon">+</span></button>
+            <div class="faq-answer">We kindly recommend arriving on time to ensure you are seated. Details may evolve slightly, so please check back closer to the day.</div>
+          </div>
+          <div class="faq-item">
+            <button class="faq-question" onclick="toggleFaq(this)">The Celebration<span class="faq-icon">+</span></button>
+            <div class="faq-answer">Expect a high-energy atmosphere filled with music and dancing throughout.</div>
+          </div>
+          <div class="faq-item tier-uk">
+            <button class="faq-question" onclick="toggleFaq(this)">What is "Spraying"?<span class="faq-icon">+</span></button>
+            <div class="faq-answer">A joyful tradition where guests offer money to the couple during dancing. Entirely optional, yet part of the celebration.</div>
+          </div>
+          <div class="faq-item">
+            <button class="faq-question" onclick="toggleFaq(this)">Dining<span class="faq-icon">+</span></button>
+            <div class="faq-answer">A curated Ghanaian buffet will be served, showcasing a variety of traditional dishes. A full dining experience will be served throughout the day in Italy as well.</div>
+          </div>
+          <div class="faq-item">
+            <button class="faq-question" onclick="toggleFaq(this)">Is there a Registry?<span class="faq-icon">+</span></button>
+            <div class="faq-answer">Your presence is truly the greatest gift. However, if you'd like to contribute, a gift registry and honeymoon fund will be shared closer to the wedding day.</div>
+          </div>
+          <div class="faq-item">
+            <button class="faq-question" onclick="toggleFaq(this)">Who can I contact?<span class="faq-icon">+</span></button>
+            <div class="faq-answer">Please feel free to contact us at traceydavidcelebration@gmail.com with any questions.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="rsvp-page">
+    <div class="rsvp-inner">
+      <div class="rsvp-header reveal">
+        <h2>Kindly Reply</h2>
+        <p id="rsvp-intro-text">We would love for you to join us. Please let us know which events you are able to attend.</p>
+      </div>
+
+      <div class="rsvp-card reveal">
+        <form id="rsvp-form" novalidate>
+          
+          <div class="form-row">
+            <div class="form-group">
+              <label for="rsvp-fname">First Name <span class="req">*</span></label>
+              <input type="text" id="rsvp-fname" name="firstName" required/>
+            </div>
+            <div class="form-group">
+              <label for="rsvp-lname">Last Name <span class="req">*</span></label>
+              <input type="text" id="rsvp-lname" name="lastName" required/>
+            </div>
+          </div>
+          
+          <div class="form-group full">
+            <label for="rsvp-email">Email Address <span class="req">*</span></label>
+            <input type="email" id="rsvp-email" name="email" required/>
+          </div>
+          
+          <div class="form-group full">
+            <label for="rsvp-address">Full Address (including country) <span class="req">*</span></label>
+            <textarea id="rsvp-address" name="address" rows="2" required></textarea>
+          </div>
+
+          <div class="tier-uk rsvp-event-box">
+            <h3 class="rsvp-event-header">UK Wedding • 20.03.2027</h3>
+            <div class="form-group full">
+              <label>Will you be attending the UK Wedding? <span class="req">*</span></label>
+              <div class="radio-group">
+                <label class="radio-label"><input type="radio" name="attendingUK" value="yes"/> Yes, I'll be there!</label>
+                <label class="radio-label"><input type="radio" name="attendingUK" value="no"/> Regretfully, no.</label>
+              </div>
+            </div>
+            <div class="form-group full" style="margin-top: 15px;">
+              <label>Do you require Aso Ebi fabric or Gele Head Wrap/Hat?</label>
+              <div class="radio-group">
+                <label class="radio-label"><input type="radio" name="asoEbi" value="yes"/> Yes</label>
+                <label class="radio-label"><input type="radio" name="asoEbi" value="no"/> No</label>
+              </div>
+            </div>
+          </div>
+
+          <div class="tier-italy rsvp-event-box">
+            <h3 class="rsvp-event-header">Italy Celebration • 25-27.06.2027</h3>
+            <div class="form-group full">
+              <label>Will you be attending the Italy Wedding Weekend? <span class="req">*</span></label>
+              <div class="radio-group">
+                <label class="radio-label"><input type="radio" name="attendingItaly" value="yes"/> Yes, I'll be there!</label>
+                <label class="radio-label"><input type="radio" name="attendingItaly" value="no"/> Regretfully, no.</label>
+              </div>
+            </div>
+            <div class="form-group full" style="margin-top:15px;">
+              <label class="radio-label" style="font-weight:500;">
+                <input type="checkbox" name="transportNeeded" value="yes"/> I need transport details for Italy
+              </label>
+            </div>
+          </div>
+
+          <div class="form-group full">
+            <label>Will you be bringing a plus one? (If applicable)</label>
+            <div class="radio-group">
+              <label class="radio-label"><input type="radio" name="plusOne" value="yes"/> Yes</label>
+              <label class="radio-label"><input type="radio" name="plusOne" value="no"/> No</label>
+            </div>
+          </div>
+
+          <div class="form-group full">
+            <label for="rsvp-hotel">Where will you be staying? (Hotel / Area)</label>
+            <input type="text" id="rsvp-hotel" name="hotel"/>
+          </div>
+          
+          <div class="form-group full">
+            <label for="dietary">Allergies or dietary requirements <span class="req">*</span></label>
+            <input type="text" id="dietary" name="dietary" required placeholder="Please list any allergies..."/>
+          </div>
+
+          <div class="form-group full">
+            <label for="rsvp-song">Song you'd love to hear on the dancefloor</label>
+            <input type="text" id="rsvp-song" name="song"/>
+          </div>
+
+          <div class="form-group full">
+            <label for="rsvp-msg">Message for the couple</label>
+            <textarea id="rsvp-msg" name="message" rows="2"></textarea>
+          </div>
+          
+          <button type="submit" class="btn-submit" id="rsvp-submit">Submit RSVP</button>
+        </form>
+        
+        <div id="rsvp-success">
+          <div class="success-icon">♡</div>
+          <h3>Thank You!</h3>
+          <p id="success-msg">Your RSVP has been received.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="footer-rule"></div>
+    <div class="footer-names">Tracey & David</div>
+    We look forward to celebrating with you
+    <div class="footer-credit">
+      Designed & developed with ♥ by
+      <a href="https://www.fiverr.com/auf_production" target="_blank" rel="noopener">AUF Production</a>
+       ·  Digital Wedding Invitations
+    </div>
+  </footer>
+
+</div>
+
+<script>
+/* ── GUEST LIST ─────────────────────── */
+const guests = {
+  "tracey s": "both",
+  "alice simpson": "uk",
+  "rana saad": "both",
+  "marco rossi": "italy" 
+};
+
+/* ── DOM ─────────────────────────────── */
+const splash=document.getElementById("splash");
+const splashVideo=document.getElementById("splash-video");
+const splashProgress=document.getElementById("splash-progress");
+const gate=document.getElementById("gate");
+const guestInput=document.getElementById("guest-name-input");
+const openBtn=document.getElementById("open-btn");
+const gateError=document.getElementById("gate-error");
+const mainEl=document.getElementById("main");
+const siteHeader=document.getElementById("site-header");
+const bgAudio=document.getElementById("bg-audio");
+const audioBtn=document.getElementById("audio-btn");
+const audioLbl=document.getElementById("audio-lbl");
+const heroTierVideo=document.getElementById("hero-tier-video");
+
+const secSplash = document.getElementById("secondary-splash");
+const secVideo = document.getElementById("secondary-splash-video");
+
+/* ── AUTOPLAY FALLBACK ──────────────── */
+document.addEventListener("DOMContentLoaded", () => {
+    splashVideo.play().catch(e => console.log("Waiting for user interaction"));
+});
+
+/* ── MAIN SPLASH (5 seconds) ─────────── */
+const SPLASH_DUR = 5000;
+let videoPlaying=false,videoDismissed=false,splashTimer=null;
+document.body.classList.add("splash-active");
+
+splashVideo.addEventListener("canplay",function(){if(!videoPlaying){splashVideo.currentTime=0;splashVideo.pause()}},{once:true});
+
+function dismissSplash(){
+  if(videoDismissed)return;
+  videoDismissed=true;
+  if(splashTimer)clearTimeout(splashTimer);
+  splashVideo.pause();
+  splash.classList.add("hidden");
+  document.body.classList.remove("splash-active");
+  gate.classList.add("visible");
+}
+function startSplashVideo(){
+  if(videoPlaying)return;
+  videoPlaying=true;
+  splashVideo.currentTime=0;
+  splashVideo.play().then(()=>{
+    splashProgress.classList.add("running");
+    void document.getElementById("splash-progress-bar").offsetWidth;
+    splashTimer=setTimeout(dismissSplash,SPLASH_DUR);
+  }).catch(()=>dismissSplash());
+}
+splashVideo.addEventListener("ended",dismissSplash);
+splashVideo.addEventListener("error",()=>setTimeout(dismissSplash,400));
+splash.addEventListener("click",startSplashVideo);
+splash.addEventListener("touchend",function(e){e.preventDefault();startSplashVideo()},{passive:false});
+setTimeout(()=>{if(!videoDismissed&&!videoPlaying)dismissSplash()},8000);
+
+/* ── MOBILE NAV TOGGLE ──────────────── */
+const navToggle=document.getElementById("nav-toggle");
+const navDrawer=document.getElementById("nav-drawer");
+navToggle.addEventListener("click",()=>navDrawer.classList.toggle("open"));
+function closeDrawer(){navDrawer.classList.remove("open")}
+
+/* ── GUEST GATE & SECONDARY SPLASH ──── */
+function openInvitation(){
+  const raw=guestInput.value.trim().toLowerCase();
+  if(!raw){gateError.textContent="Please enter your name to continue.";guestInput.focus();return}
+  
+  const tier = guests[raw];
+  if(!tier){gateError.textContent="We couldn't find your name on the guest list. Please check the spelling.";guestInput.style.borderColor="var(--gold)";return}
+  gateError.textContent="";
+  
+  const nameParts = raw.split(" ").map(w=>w[0].toUpperCase()+w.slice(1));
+  const displayName = nameParts[0]; 
+  const guestDisplay = document.querySelector(".guest-name-display");
+  if(guestDisplay) guestDisplay.textContent = displayName;
+
+  document.body.setAttribute('data-guest-tier', tier);
+
+  const heroLocText = document.getElementById("dynamic-hero-location");
+  const rsvpText = document.getElementById("rsvp-intro-text");
+  
+  if (tier === "uk") {
+    heroLocText.innerHTML = "at their traditional wedding ceremony in London";
+    rsvpText.innerHTML = "We would love for you to join us in <strong>London</strong> as we celebrate our traditional wedding ceremony. It would mean a great deal to have you there.";
+    heroTierVideo.src = "uk.mp4";
+  } else if (tier === "italy") {
+    heroLocText.innerHTML = "at their Italian wedding celebration";
+    rsvpText.innerHTML = "We would love for you to join us in <strong>Lago di Garda</strong> for our wedding weekend. It would mean a great deal to have you there.";
+    heroTierVideo.src = "Italy.mp4";
+  } else {
+    heroLocText.innerHTML = "at their wedding celebrations";
+    rsvpText.innerHTML = "We would love for you to join us in <strong>London and Lago di Garda</strong> as we celebrate our wedding. It would mean a great deal to have you there.";
+    heroTierVideo.src = "Italy.mp4";
+  }
+  heroTierVideo.load();
+  heroTierVideo.play().catch(() => {});
+
+  gate.classList.add("hide");
+  mainEl.classList.add("visible");
+  setTimeout(()=>{mainEl.classList.add("show");initScrollReveal();siteHeader.classList.add("show")}, 80);
+  setTimeout(()=>gate.classList.add("gone"), 960);
+  tryPlayMusic();
+}
+
+openBtn.addEventListener("click",openInvitation);
+guestInput.addEventListener("keydown",e=>{if(e.key==="Enter")openInvitation()});
+guestInput.addEventListener("input",()=>{gateError.textContent="";guestInput.style.borderColor=""});
+
+/* ── SCROLL REVEAL ──────────────────── */
+function initScrollReveal(){
+  const obs=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add("visible");obs.unobserve(e.target)}})},{threshold:.08});
+  document.querySelectorAll(".reveal,.reveal-left,.reveal-right").forEach(el=>obs.observe(el));
+}
+
+/* ── FAQ ACCORDION ──────────────────── */
+function toggleFaq(btn){
+  const item=btn.closest(".faq-item");
+  const wasOpen=item.classList.contains("open");
+  document.querySelectorAll(".faq-item.open").forEach(i=>i.classList.remove("open"));
+  if(!wasOpen)item.classList.add("open");
+}
+
+/* ── CONFETTI GENERATOR ─────────────── */
+function throwConfetti() {
+  for (let i = 0; i < 100; i++) {
+    let conf = document.createElement('div');
+    conf.className = 'confetti';
+    conf.style.left = Math.random() * 100 + 'vw';
+    conf.style.backgroundColor = Math.random() > 0.5 ? '#B59C7A' : '#ffffff'; 
+    conf.style.animationDuration = (Math.random() * 3 + 2) + 's';
+    document.body.appendChild(conf);
+    setTimeout(() => conf.remove(), 5000);
+  }
+}
+
+/* ── RSVP SUBMISSION ────────────────── */
+const RSVP_ENDPOINT = "https://script.google.com/macros/s/AKfycbzA3kSmJRuBqkr9bjtJ3WZnlKXlhDmZqOLPEG2_Xo9T86OObVXjOGzFaSEU1MJL3gcF/exec";
+
+function getRadioValue(form, name) {
+  const checked = form.querySelector(`input[name="${name}"]:checked`);
+  return checked ? checked.value : "";
+}
+
+function validateRsvpForm(form, guestTier) {
+  const firstName = form.elements["firstName"].value.trim();
+  const lastName = form.elements["lastName"].value.trim();
+  const email = form.elements["email"].value.trim();
+  const address = form.elements["address"].value.trim();
+  const attending = getRadioValue(form, "attending");
+  const plusOne = getRadioValue(form, "plusOne");
+  const dietary = form.elements["dietary"].value.trim();
+
+  if (!firstName || !lastName || !email || !address || !dietary) {
+    return "Please fill in all required fields.";
+  }
+
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    return "Please enter a valid email address.";
+  }
+
+  if (!attending) {
+    return "Please tell us if you will be attending.";
+  }
+
+  if (!plusOne) {
+    return "Please tell us if you are bringing a guest.";
+  }
+
+  if (guestTier !== "italy") {
+    const asoEbi = getRadioValue(form, "asoEbi");
+    if (!asoEbi) {
+      return "Please tell us whether you need Aso Ebi / Gele / Hat.";
+    }
+  }
+
+  return "";
+}
+
+document.getElementById("rsvp-form").addEventListener("submit", async e => {
+  e.preventDefault();
+  const f = e.target;
+  const guestTier = document.body.getAttribute("data-guest-tier") || "both";
+  const attending = getRadioValue(f, "attending");
+
+  const validationError = validateRsvpForm(f, guestTier);
+  if (validationError) {
+    alert(validationError);
+    return;
+  }
+
+  if (RSVP_ENDPOINT.includes("YOUR_SCRIPT_ID_HERE")) {
+    alert("RSVP backend is not connected yet. Please add your Google Apps Script Web App URL in RSVP_ENDPOINT.");
+    return;
+  }
+
+  const sub = document.getElementById("rsvp-submit");
+  sub.disabled = true;
+  sub.textContent = "Sending…";
+
+  const payload = Object.fromEntries(new FormData(f).entries());
+  payload.timestamp = new Date().toISOString();
+  payload.guestTier = guestTier;
+  payload.transportNeeded = payload.transportNeeded === "yes" ? "yes" : "no";
+  payload.asoEbi = payload.asoEbi || "n/a";
+
+  try {
+    const body = new URLSearchParams(payload).toString();
+    const res = await fetch(RSVP_ENDPOINT, {
+      method: "POST",
+      body
+    });
+
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+
+    f.style.display = "none";
+    document.getElementById("rsvp-success").classList.add("show");
+
+    if (attending === "no") {
+      document.getElementById("success-msg").textContent = "We're so sorry you can't make it, but we truly appreciate you letting us know. You'll be in our thoughts on our special day.";
+    } else {
+      document.getElementById("success-msg").textContent = "Your RSVP has been received. We're so excited to celebrate with you!";
+      throwConfetti();
+    }
+  } catch (err) {
+    sub.disabled = false;
+    sub.textContent = "Submit";
+    alert("There was an issue sending your RSVP. Please try again.");
+  }
+});
+
+/* ── AUDIO ──────────────────────────── */
+let isPlaying=false;
+function tryPlayMusic(){bgAudio.volume=.3;bgAudio.play().then(()=>{isPlaying=true;audioBtn.textContent="II";audioBtn.style.animation="audioRipple 2.2s ease-in-out infinite";audioLbl.textContent="Playing"}).catch(()=>{})}
+audioBtn.addEventListener("click",()=>{
+  if(isPlaying){bgAudio.pause();isPlaying=false;audioBtn.textContent="♪";audioBtn.style.animation="none";audioLbl.textContent="Music"}
+  else{bgAudio.volume=.3;bgAudio.play().then(()=>{isPlaying=true;audioBtn.textContent="II";audioBtn.style.animation="audioRipple 2.2s ease-in-out infinite";audioLbl.textContent="Playing"}).catch(()=>{audioLbl.textContent="Tap again"})}
+});
+</script>
+</body>
+</html>
