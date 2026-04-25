@@ -12,7 +12,7 @@
 
 <style>
 /* ═══════════════════════════════════════════════════
-   TOKENS & BASE (Stability Fixes)
+   TOKENS & BASE
 ═══════════════════════════════════════════════════ */
 :root {
   --header-bg: #EFEEE9;
@@ -34,7 +34,20 @@
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html { scroll-behavior: smooth; width: 100%; overflow-x: hidden; }
-body { background: var(--bg-cream); color: var(--ink); font-family: 'Raleway', sans-serif; font-weight: 300; overflow-x: hidden; width: 100%; position: relative; }
+
+/* FONT FIX: Forces laptops/Windows to render fonts as elegantly as iPhones */
+body { 
+  background: var(--bg-cream); 
+  color: var(--ink); 
+  font-family: 'Raleway', sans-serif; 
+  font-weight: 300; 
+  overflow-x: hidden; 
+  width: 100%; 
+  position: relative; 
+  -webkit-font-smoothing: antialiased; 
+  -moz-osx-font-smoothing: grayscale; 
+  text-rendering: optimizeLegibility; 
+}
 body.splash-active { overflow: hidden; }
 
 /* ═══════════════════════════════════════════════════
@@ -44,7 +57,7 @@ body[data-guest-tier="uk"] .tier-italy { display: none !important; }
 body[data-guest-tier="italy"] .tier-uk { display: none !important; }
 
 /* ═══════════════════════════════════════════════════
-   FULLSCREEN SPLASH SCREENS (Fixed sizing)
+   FULLSCREEN SPLASH SCREENS
 ═══════════════════════════════════════════════════ */
 #splash, #secondary-splash { position: fixed; top: 0; left: 0; right: 0; bottom: 0; width: 100%; height: 100%; z-index: 9999; background-color: var(--bg-cream); display: flex; flex-direction: column; align-items: center; justify-content: flex-end; padding-bottom: 50px; overflow: hidden; transition: opacity 1s ease, visibility 1s ease; }
 #secondary-splash { z-index: 9000; justify-content: center; }
@@ -61,7 +74,7 @@ body[data-guest-tier="italy"] .tier-uk { display: none !important; }
 .splash-divider span { width: 40px; height: 1px; background: var(--gold); opacity: .55; display: block; }
 .splash-divider i { color: var(--gold); font-size: 8px; letter-spacing: .2em; font-style: normal;}
 .splash-progress { position: absolute; bottom: 0; left: 0; right: 0; z-index: 3; height: 4px; background: rgba(212,175,55,.25); display: none; }
-.splash-progress-bar { height: 100%; background: linear-gradient(90deg, var(--gold), var(--gold-light)); width: 0%; transition: width 5s linear; } /* 5s duration */
+.splash-progress-bar { height: 100%; background: linear-gradient(90deg, var(--gold), var(--gold-light)); width: 0%; transition: width 5s linear; } 
 .splash-progress.running { display: block; }
 .splash-progress.running .splash-progress-bar { width: 100%; }
 .splash-hint { position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%); z-index: 2; color: rgba(255,255,255,.9); font-size: 9px; letter-spacing: .45em; text-transform: uppercase; opacity: 0; animation: fadeIn 1s 1.6s ease forwards, hintPulse 2.6s 2.8s ease-in-out infinite; cursor: pointer; }
@@ -74,7 +87,7 @@ body[data-guest-tier="italy"] .tier-uk { display: none !important; }
    GUEST GATE
 ═══════════════════════════════════════════════════ */
 #gate { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 8000; background: var(--bg-cream); display: none; flex-direction: column; align-items: center; justify-content: center; padding: 2rem; transition: opacity .9s ease; overflow: hidden; }
-#gate-bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: 0; opacity: 0.6; pointer-events: none; }
+#gate-bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: 0; opacity: 0.6; pointer-events: none; image-rendering: high-quality; }
 #gate.visible { display: flex; }
 #gate.hide { opacity: 0; pointer-events: none; }
 #gate.gone { display: none !important; }
@@ -132,7 +145,38 @@ section { position: relative; z-index: 1; width: 100%; }
    HERO
 ═══════════════════════════════════════════════════ */
 #hero { min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: calc(90px + 40px) 20px 60px; }
-.hero-eyebrow { font-family: 'Literaturnaya', serif; font-size: 0.8rem; letter-spacing: 0.3em; text-transform: uppercase; color: #333; margin-bottom: 20px; opacity: 0; animation: fadeUp 1.2s .2s ease forwards; }
+.hero-top-wrap {
+  width: 100%;
+  max-width: 980px;
+  margin: 0 auto 24px;
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(181, 156, 122, 0.35);
+  box-shadow: 0 16px 45px rgba(0,0,0,0.08);
+  border-radius: 6px;
+}
+.hero-tier-video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  z-index: 0;
+  pointer-events: none;
+}
+.hero-top-wrap::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(239,238,233,.8) 0%, rgba(239,238,233,.62) 50%, rgba(239,238,233,.82) 100%);
+  z-index: 1;
+}
+.hero-top-content {
+  position: relative;
+  z-index: 2;
+  padding: 48px 24px 36px;
+}
 .hero-names-stacked { display: flex; flex-direction: column; align-items: center; gap: 5px; opacity: 0; animation: fadeUp 1.2s .6s ease forwards; margin-bottom: 25px; width: 100%; }
 .partner-name { font-family: 'Bodoni Moda', serif; font-size: clamp(2.5rem, 8vw, 4.5rem); color: var(--burgundy); letter-spacing: 0.1em; line-height: 1; text-transform: uppercase; }
 .hero-amp { font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: clamp(2rem, 5vw, 3rem); color: var(--gold); line-height: 1; }
@@ -271,11 +315,13 @@ footer { text-align: center; padding: 40px 20px 60px; font-size: 9px; letter-spa
 .footer-credit a { color: var(--gold); text-decoration: none; }
 
 /* ═══════════════════════════════════════════════════
-   RESPONSIVE
+   RESPONSIVE (Fixed for Laptop Widths)
 ═══════════════════════════════════════════════════ */
-@media(max-width: 900px) {
-  .faq-layout { grid-template-columns: 1fr; }
+@media(min-width: 1025px) {
+  /* LAPTOP SPECIFIC FIXES */
+  #gate-bg { object-fit: contain; background: var(--bg-cream); }
 }
+
 @media(max-width: 1024px) {
   #site-header { height: 70px; padding: 0 16px; }
   .header-logo { max-height: 50px; max-width: 100px; }
@@ -285,9 +331,18 @@ footer { text-align: center; padding: 40px 20px 60px; font-size: 9px; letter-spa
   :root { --hh: 70px; }
   .section-wrapper { padding: 70px 16px; }
 }
+
+@media(max-width: 900px) {
+  .faq-layout { grid-template-columns: 1fr; }
+}
+
 @media(max-width: 600px) {
   #hero { padding: calc(90px + 20px) 16px 50px; }
+  .hero-top-content { padding: 36px 14px 24px; }
   .hero-dates-wrapper { flex-direction: column; gap: 1rem;}
+  
+  /* MOBILE SPLASH FIX: Show full video frame without cropping */
+  #splash video, #secondary-splash video { object-fit: contain; }
   
   .travel-grid { grid-template-columns: 1fr; gap: 1.2rem;}
   .travel-card { padding: 1.5rem; }
@@ -306,9 +361,9 @@ footer { text-align: center; padding: 40px 20px 60px; font-size: 9px; letter-spa
     <source src="splash.mp4#t=0.001" type="video/mp4"/>
   </video>
   <div class="splash-content">
-   
+    <div class="splash-divider"><span></span><i>✦</i><span></span></div>
   </div>
-  
+  <div class="splash-hint">Tap anywhere to begin</div>
   <div class="splash-progress" id="splash-progress">
     <div class="splash-progress-bar" id="splash-progress-bar"></div>
   </div>
@@ -376,31 +431,37 @@ footer { text-align: center; padding: 40px 20px 60px; font-size: 9px; letter-spa
 <div id="main">
 
   <section id="hero">
-    <div class="hero-names-stacked">
-      <div class="partner-name">Tracey</div>
-      <div class="hero-amp">&</div>
-      <div class="partner-name">David</div>
-    </div>
-    
-    <p class="hero-invite-text">
-      request the pleasure of your company<br>
-      <span id="dynamic-hero-location">at their wedding celebrations</span>
-    </p>
+    <div class="hero-top-wrap">
+      <video id="hero-tier-video" class="hero-tier-video" autoplay muted loop playsinline preload="metadata">
+      </video>
+      <div class="hero-top-content">
+        <div class="hero-names-stacked">
+          <div class="partner-name">Tracey</div>
+          <div class="hero-amp">&</div>
+          <div class="partner-name">David</div>
+        </div>
+        
+        <p class="hero-invite-text">
+          request the pleasure of your company<br>
+          <span id="dynamic-hero-location">at their wedding celebrations</span>
+        </p>
 
-    <div class="hero-dates-wrapper reveal reveal-d1">
-      <div class="hero-date-box tier-uk">
-        <span class="hd-date">20. 03. 2027</span>
-        <span class="hd-names">TRACEY & DAVID</span>
-        <span class="hd-loc">London</span>
-      </div>
-      <div class="hero-date-box tier-italy">
-        <span class="hd-date">26. 06. 2027</span>
-        <span class="hd-names">TRACEY & DAVID</span>
-        <span class="hd-loc">Lago di Garda</span>
+        <div class="hero-dates-wrapper reveal reveal-d1">
+          <div class="hero-date-box tier-uk">
+            <span class="hd-date">20. 03. 2027</span>
+            <span class="hd-names">TRACEY & DAVID</span>
+            <span class="hd-loc">London</span>
+          </div>
+          <div class="hero-date-box tier-italy">
+            <span class="hd-date">26. 06. 2027</span>
+            <span class="hd-names">TRACEY & DAVID</span>
+            <span class="hd-loc">Lago di Garda</span>
+          </div>
+        </div>
+
+        <a href="#our-story" class="btn-read-story reveal reveal-d2">Read Our Story</a>
       </div>
     </div>
-
-    <a href="#our-story" class="btn-read-story reveal reveal-d2">Read Our Story</a>
 
     <div class="hero-welcome-block reveal reveal-d3">
       <p class="welcome-greeting">Dear <span class="guest-name-display">Family & Friends</span>,</p>
@@ -828,6 +889,7 @@ const siteHeader=document.getElementById("site-header");
 const bgAudio=document.getElementById("bg-audio");
 const audioBtn=document.getElementById("audio-btn");
 const audioLbl=document.getElementById("audio-lbl");
+const heroTierVideo=document.getElementById("hero-tier-video");
 
 const secSplash = document.getElementById("secondary-splash");
 const secVideo = document.getElementById("secondary-splash-video");
@@ -897,35 +959,24 @@ function openInvitation(){
   if (tier === "uk") {
     heroLocText.innerHTML = "at their traditional wedding ceremony in London";
     rsvpText.innerHTML = "We would love for you to join us in <strong>London</strong> as we celebrate our traditional wedding ceremony. It would mean a great deal to have you there.";
-    secVideo.src = "uk.mp4";
+    heroTierVideo.src = "uk.mp4";
   } else if (tier === "italy") {
     heroLocText.innerHTML = "at their Italian wedding celebration";
     rsvpText.innerHTML = "We would love for you to join us in <strong>Lago di Garda</strong> for our wedding weekend. It would mean a great deal to have you there.";
-    secVideo.src = "italy.mp4";
+    heroTierVideo.src = "Italy.mp4";
   } else {
     heroLocText.innerHTML = "at their wedding celebrations";
     rsvpText.innerHTML = "We would love for you to join us in <strong>London and Lago di Garda</strong> as we celebrate our wedding. It would mean a great deal to have you there.";
-    secVideo.src = "italy.mp4"; 
+    heroTierVideo.src = "Italy.mp4";
   }
+  heroTierVideo.load();
+  heroTierVideo.play().catch(() => {});
 
   gate.classList.add("hide");
-
-  secSplash.classList.remove("hidden");
-  secSplash.classList.add("visible");
-  
-  secVideo.play().catch(() => {}); 
-
-  // Secondary splash duration set to 4.5s
-  setTimeout(() => {
-    secSplash.classList.remove("visible");
-    secSplash.classList.add("hidden");
-    secVideo.pause();
-
-    mainEl.classList.add("visible");
-    setTimeout(()=>{mainEl.classList.add("show");initScrollReveal();siteHeader.classList.add("show")}, 80);
-    setTimeout(()=>gate.classList.add("gone"), 960);
-    tryPlayMusic();
-  }, 4500);
+  mainEl.classList.add("visible");
+  setTimeout(()=>{mainEl.classList.add("show");initScrollReveal();siteHeader.classList.add("show")}, 80);
+  setTimeout(()=>gate.classList.add("gone"), 960);
+  tryPlayMusic();
 }
 
 openBtn.addEventListener("click",openInvitation);
