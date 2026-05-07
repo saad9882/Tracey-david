@@ -590,8 +590,12 @@ footer { text-align: center; padding: 40px 20px 60px; font-size: clamp(0.7rem, 1
 
    RESPONSIVE (Mobile First Approach)
 
-═══════════════════════════════════════════════════ */
-
+══════════════════════s═════════════════════════════ */
+.responsive-video {
+  width: 100%;
+  height: auto; /* Maintains the aspect ratio */
+  max-width: 800px; /* Optional: prevents it from getting too large */
+}
 <video controls class="responsive-video">
 @media(max-width: 1024px) {
 
